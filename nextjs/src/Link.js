@@ -11,7 +11,7 @@ const NextComposed = React.forwardRef(function NextComposed(props, ref) {
 
   return (
     <NextLink href={href} as={as}>
-      <a ref={ref} {...other} />
+      <a style={{textDecoration: 'none'}} ref={ref} {...other} />
     </NextLink>
   );
 });
