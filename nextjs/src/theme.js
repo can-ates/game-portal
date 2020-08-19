@@ -20,8 +20,12 @@ const theme = createMuiTheme({
     },
     rusty: {
       main: '#D78D67',
-    },  
+    },
+    text : {
+      primary: '#fff'
+    }  
   },
+  
 });
 
 export default theme;
