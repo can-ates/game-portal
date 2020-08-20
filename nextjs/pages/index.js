@@ -24,7 +24,7 @@ function Index(props) {
 }
 
 export async function getServerSideProps() {
-  const res = await axios.get('https://api.rawg.io/api/games', {
+  const res = await axios.get('https://api.rawg.io/api/games?page_size=40', {
     headers: { 'User-Agent': 'gameportal' },
   });
 
