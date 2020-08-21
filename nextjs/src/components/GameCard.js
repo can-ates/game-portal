@@ -17,6 +17,7 @@ import { FaPlay } from 'react-icons/fa';
 
 const useStyles = makeStyles(theme => ({
   card: {
+    position:'relative',
     height: 'auto',
     width: 'auto',
     maxHeight: '50em',
@@ -36,13 +37,7 @@ const useStyles = makeStyles(theme => ({
     minHeight: '30em',
     objectFit: 'cover',
   },
-  spinner: {
-    position: 'absolute',
-    left: '50%',
-    top: '50%',
-    zIndex: '150',
-    transform: 'scale(1.2)',
-  },
+
   cardVideo: {
     height: 'auto',
     minHeight: '30em',
@@ -51,23 +46,27 @@ const useStyles = makeStyles(theme => ({
   },
   videoDetail: {
     position: 'absolute',
-    bottom: '0',
-    zIndex: '10',
     transform: 'scale(1.2)',
+    bottom: '-100px',
+    left: '0',
+    zIndex: '100',
+    width: '100%',
+    opacity: '0.5',
+    backgroundColor: theme.palette.secondary.main,
+    borderTopLeftRadius: '10px',
+    borderTopRightRadius: '10px',
   },
   imageDetail: {
     position: 'absolute',
     bottom: '0',
     left: '0',
+    
     zIndex: '10',
     width: '100%',
     opacity: '0.8',
     backgroundColor: theme.palette.secondary.main,
     borderBottomLeftRadius: '10px',
     borderBottomRightRadius: '10px',
-  },
-  mediaWrapper : {
-    
   },
   icon: {
     color: theme.palette.green.light,
@@ -124,7 +123,7 @@ const GameCard = ({ info }) => {
   );
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', height: '100%' }}>
       <Card
         className={classes.card}
         elevation={0}
@@ -134,7 +133,7 @@ const GameCard = ({ info }) => {
         onMouseLeave={() => handleVideo(false)}
       >
         {showVideo && info.clip ? (
-          <div className={classes.mediaWrapper}>
+          <div>
             <CardMedia
               muted={true}
               autoPlay={true}
@@ -146,12 +145,10 @@ const GameCard = ({ info }) => {
               src={info.clip.clips['640']}
             />
 
-            <CardContent className={classes.videoDetail}>
-              <Typography>anan</Typography>
-            </CardContent>
+            
           </div>
         ) : (
-          <div className={classes.mediaWrapper}> 
+          <div > 
             <CardMedia
               elevation={0}
               component='img'
@@ -166,7 +163,19 @@ const GameCard = ({ info }) => {
             </CardContent>
           </div>
         )}
+
+        
       </Card>
+     
+      {showVideo && 
+        <CardContent className={classes.videoDetail}>
+  {renderIcons()}
+  <Typography variant='subtitle1'>{info.name}</Typography>
+  <Typography variant='subtitle1'>{info.name}</Typography>
+  <Typography variant='subtitle1'>{info.name}</Typography>
+  <Typography variant='subtitle1'>{info.name}</Typography>
+  <Typography variant='subtitle1'>{info.name}</Typography>
+  </CardContent>}
     </div>
   );
 };

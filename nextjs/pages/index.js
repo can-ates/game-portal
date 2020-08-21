@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import {useSWRInfinite} from 'swr';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
@@ -11,6 +11,7 @@ const GameCard = dynamic(() => import('../src/components/GameCard'));
 const fetcher = url => axios.get(url).then(res => res.data.results);
 
 function Index(props) {
+  const observer = useRef()
   const {
     data,
     error,
@@ -26,45 +27,48 @@ function Index(props) {
     }
   );
 
+  
+
+  
+
+  if(error) return <p>Error occured</p>
+  if(!data) return <p>Loading</p>
+
   let games = []
 
   for(let i = 0; i<data.length; i++){
     games = games.concat(data[i])
   }
   
-  const lastGameCardRef = useCallback(node => {
-    // if(isLoadingMore) return
-    // if(observer.current) observer.current.disconnect()
-    // observer.current = new IntersectionObserver(entries => {
-    //   if(entries[0].isIntersecting) {
-    //     setSize(page + 1)
-    //     setPage(pg => pg + 1)
-    //   }
-    // })
-    // if(node) observer.current.observe(node)
-    
-  });
-
-  const handleFetch = useCallback(() => {
-    setSize(size + 1)
-  })
 
   if(error) return <p>error</p>
   if(!data) return <p>loaading</p>
 
+  const lastGameCardRef = useCallback(node => {
+    if(observer.current) observer.current.disconnect()
+    observer.current = new IntersectionObserver(entries => {
+      if(entries[0].isIntersecting) {
+        console.log('anan')
+      }
+    })
+    if(node) observer.current.observe(node)
+    
+  }, [size]);
+
   return (
     <div style={{ marginTop: '4em', padding: 20 }}>
       <Grid container direction='column'>
-        <Button onClick={handleFetch}>ADD</Button>
+      <Button onClick={() => setSize(size + 1)}>ADD</Button>
         <Grid
           item
+
           container
           spacing={10}
           direction='row'
           justify='space-between'
         >
           {games.map((game, i) => {
-            if (data.length === i + 1) {
+            if (games.length === i + 1) {
               return (
                 <Grid
                   ref={lastGameCardRef}
@@ -107,4 +111,4 @@ export async function getServerSideProps() {
   };
 }
 
-export default Index;
+export default React.memo(Index);
