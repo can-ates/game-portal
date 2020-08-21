@@ -1,77 +1,174 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles} from '@material-ui/core/styles';
+
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+
+
+import { FaLinux } from 'react-icons/fa';
+import { FaPlaystation } from 'react-icons/fa';
+import { FaWindows } from 'react-icons/fa';
+import { FaXbox } from 'react-icons/fa';
+import { FaApple } from 'react-icons/fa';
+import { FaPlay } from 'react-icons/fa';
 
 const useStyles = makeStyles(theme => ({
   card: {
     height: 'auto',
     width: 'auto',
     maxHeight: '50em',
-    transition: 'transform 0.4s ease-out',
+    transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
         position: 'absolute',
         transform: 'scale(1.2)',
+        cursor: 'pointer'
       },
     },
+    borderRadius: '10px',
   },
   cardImage: {
     height: 'auto',
     width: '100%',
     minHeight: '30em',
-    position: 'relative',
     objectFit: 'cover',
   },
   spinner: {
     position: 'absolute',
     left: '50%',
     top: '50%',
+    zIndex: '150',
+    transform: 'scale(1.2)',
+  },
+  cardVideo: {
+    height: 'auto',
+    minHeight: '30em',
+    width: '100%',
+    objectFit: 'fill',
+  },
+  videoDetail: {
+    position: 'absolute',
+    bottom: '0',
+    zIndex: '10',
+    transform: 'scale(1.2)',
+  },
+  imageDetail: {
+    position: 'absolute',
+    bottom: '0',
+    left: '0',
+    zIndex: '10',
+    width: '100%',
+    opacity: '0.8',
+    backgroundColor: theme.palette.secondary.main,
+    borderBottomLeftRadius: '10px',
+    borderBottomRightRadius: '10px',
+  },
+  mediaWrapper : {
+    
+  },
+  icon: {
+    color: theme.palette.green.light,
+    marginRight: '0.5em',
+    fontSize: '1.2em',
+  },
+  playButton: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    fontSize: '5em',
+    transform:'translate(-50%, -50%)',
+    opacity: '0.7',
+    backgroundColor: theme.palette.secondary.main,
+    borderRadius: '50%',
+    padding: '0.2em'
   },
 }));
 
 const GameCard = ({ info }) => {
   const [showVideo, setShowVideo] = useState(false);
-  const [showSpinner, setShowSpinner] = useState(false);
+  
+
+
 
   const classes = useStyles();
-  const theme = useTheme();
 
-  useEffect(() => {}, []);
+  const renderIcons = useCallback(
+    () =>
+      info.parent_platforms.map(platform => {
+        switch (platform.platform.name) {
+          case 'PlayStation':
+            return <FaPlaystation key='PlayStation' className={classes.icon} />;
+          case 'Xbox':
+            return <FaXbox key='Xbox' className={classes.icon} />;
+          case 'PC':
+            return <FaWindows key='PC' className={classes.icon} />;
+          case 'Apple Macintosh':
+            return <FaApple key='Apple Macintosh' className={classes.icon} />;
+          case 'Linux':
+            return <FaLinux key='Linux' className={classes.icon} />;
+        }
+      }),
+    [info.parent_platforms]
+  );
+
+  const handleVideo = useCallback(
+    e => {
+      setTimeout(() => {
+        setShowVideo(e);
+      }, 200);
+    },
+    [showVideo]
+  );
 
   return (
     <div style={{ position: 'relative' }}>
       <Card
         className={classes.card}
         elevation={0}
-        onMouseEnter={useCallback(() => setShowVideo(true), [showVideo])}
-        onMouseLeave={useCallback(() => setShowVideo(false), [showVideo])}
+
+
+        onMouseOver={() => handleVideo(true)}
+        onMouseLeave={() => handleVideo(false)}
       >
-        {showVideo ? (
-          <CardMedia
-            muted={true}
-            autoPlay={true}
-            elevation={0}
-            component='video'
-            className={classes.cardImage}
-            src={info.clip.clips['640']}
-          />
+        {showVideo && info.clip ? (
+          <div className={classes.mediaWrapper}>
+            <CardMedia
+              muted={true}
+              autoPlay={true}
+              loop={true}
+              poster={info.clip ? info.clip.preview : undefined}
+              elevation={0}
+              component='video'
+              className={classes.cardVideo}
+              src={info.clip.clips['640']}
+            />
+
+            <CardContent className={classes.videoDetail}>
+              <Typography>anan</Typography>
+            </CardContent>
+          </div>
         ) : (
-          <>
+          <div className={classes.mediaWrapper}> 
             <CardMedia
               elevation={0}
               component='img'
               className={classes.cardImage}
               image={info.background_image}
             />
-            {showSpinner && <CircularProgress className={classes.spinner} />}
-          </>
+            {info.clip && <FaPlay className={classes.playButton} />}
+            
+            <CardContent className={classes.imageDetail}>
+            {renderIcons()}
+              <Typography variant='h6'>{info.name}</Typography>
+            </CardContent>
+          </div>
         )}
       </Card>
     </div>
   );
 };
 
-export default GameCard;
+export default React.memo(GameCard);

@@ -6,13 +6,13 @@ const theme = createMuiTheme({
     primary: {
       main: '#fff'
     },
+    secondary: {
+      main: '#121212'
+    },
     white: {
       light: '#F4F5F5',
       mid: '#DCE3E1',
       dark: '#B6C0C2'
-    },
-    black: {
-      main: '#3F3B3B',
     },
     green: {
       light: '#4AD87F',
@@ -25,7 +25,12 @@ const theme = createMuiTheme({
       primary: '#fff'
     }  
   },
-  
+  typography :{
+    h6 : {
+      fontWeight: '800',
+      color: '#4AD87F',
+    }
+  }
 });
 
 export default theme;

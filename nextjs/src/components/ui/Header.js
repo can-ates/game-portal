@@ -183,6 +183,9 @@ export default function PrimarySearchAppBar() {
               }}
               inputProps={{ 'aria-label': 'search' }}
             />
+            <Button variant="contained" color="primary" component={Link} naked href="/about">
+            about
+          </Button>
           </div>
           <div className={classes.grow} />
           <div className={classes.sign}>
