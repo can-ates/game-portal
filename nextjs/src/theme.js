@@ -26,6 +26,10 @@ const theme = createMuiTheme({
     }  
   },
   typography :{
+    h1:{
+      fontWeight: '900',
+      fontSize: "4rem"
+    },
     h6 : {
       fontWeight: '800',
       color: '#4AD87F',
@@ -34,8 +38,26 @@ const theme = createMuiTheme({
     subtitle1 :{
       fontWeight: '800',
       color: '#4AD87F',
-      
+    },
+    caption :{
+      fontWeight: '900',
+      color: '#779276',
+      fontSize: "0.8rem"
+    },
+    overline :{
+      fontWeight: '900',
+      color: '#4AD87F',
+      fontSize: "0.8rem",
+      lineHeight: '1'
     }
+  },
+  overrides : {
+    MuiDivider:{
+      root : {
+        backgroundColor :'#779276'
+      }
+    },
+    
   }
 });
 

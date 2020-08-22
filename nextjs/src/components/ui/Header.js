@@ -94,7 +94,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+function Header() {
   const theme = useTheme();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -205,3 +205,5 @@ export default function PrimarySearchAppBar() {
     </div>
   );
 }
+
+export default React.memo(Header)

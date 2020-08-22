@@ -1,8 +1,7 @@
-import React, { useRef, useCallback, useEffect } from 'react';
+import React, { useRef, useCallback } from 'react';
 import {useSWRInfinite} from 'swr';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
-import Link from '../src/Link';
 import Grid from '@material-ui/core/Grid';
 import { Button } from '@material-ui/core';
 
@@ -26,10 +25,6 @@ function Index(props) {
       
     }
   );
-
-  
-
-  
 
   if(error) return <p>Error occured</p>
   if(!data) return <p>Loading</p>
