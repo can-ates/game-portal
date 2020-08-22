@@ -9,10 +9,10 @@ const GameCard = dynamic(() => import('../../src/components/GameCard'));
 
 const Similar = ({ details, game }) => {
   return (
-    <div style={{ marginTop: '2em', padding: 20 }}>
+    <div style={{ marginTop: '3em', padding: 20 }}>
       <Grid container direction='column'>
       <Grid item>
-        <Typography align='center' style={{marginBottom: '1.250em'}} variant='h1'>Similar games to {game}</Typography>
+        <Typography align='center' style={{marginBottom: '2.250em'}} variant='h1'>Visually similar games to {game}</Typography>
       </Grid>
         <Grid
           item

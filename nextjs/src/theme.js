@@ -28,12 +28,17 @@ const theme = createMuiTheme({
   typography :{
     h1:{
       fontWeight: '900',
-      fontSize: "4rem"
+      fontSize: "3rem"
     },
     h6 : {
       fontWeight: '800',
       color: '#4AD87F',
       fontSize: "1.1rem"
+    },
+    h5 : {
+      fontWeight: '800',
+      color: '#4AD87F',
+      fontSize: "1.4rem"
     },
     subtitle1 :{
       fontWeight: '800',
@@ -57,6 +62,13 @@ const theme = createMuiTheme({
         backgroundColor :'#779276'
       }
     },
+    MuiButton: {
+      root : {
+        '&:hover' :{
+          backgroundColor: 'none'
+        }
+      }
+    }
     
   }
 });

@@ -21,8 +21,8 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.green.light,
     color: 'white',
     [theme.breakpoints.up('sm')]: {
-        display: 'none',
-      },
+      display: 'none',
+    },
   },
   title: {
     display: 'none',
@@ -151,7 +151,7 @@ function Header() {
 
   return (
     <div className={classes.grow}>
-      <AppBar position='static' color='transparent' elevation={0}>
+      <AppBar style={{padding: '1em 0'}} position='static' color='transparent' elevation={0}>
         <Toolbar disableGutters>
           <IconButton
             edge='start'
@@ -160,17 +160,25 @@ function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography className={classes.title} variant='h6' noWrap>
-            Game
-          </Typography>
-          <Typography
-            className={classes.title}
-            style={{ color: theme.palette.green.light }}
-            variant='h6'
-            noWrap
+          <Button
+            variant='text'
+            disableRipple
+            component={Link}
+            href='/'
           >
-            Portal
-          </Typography>
+            <Typography className={classes.title} variant='h5' noWrap>
+              Game
+            </Typography>
+            <Typography
+              className={classes.title}
+              style={{ color: theme.palette.green.light }}
+              variant='h5'
+              noWrap
+            >
+              Portal
+            </Typography>
+          </Button>
+
           <div className={classes.search}>
             <div className={classes.searchIcon}>
               <SearchIcon />
@@ -183,18 +191,55 @@ function Header() {
               }}
               inputProps={{ 'aria-label': 'search' }}
             />
-            <Button variant="contained" color="primary" component={Link} naked href="/about">
-            about
-          </Button>
+            <Button
+              variant='contained'
+              color='primary'
+              component={Link}
+              naked
+              href='/about'
+            >
+              about
+            </Button>
           </div>
           <div className={classes.grow} />
           <div className={classes.sign}>
             <div className={classes.sign}>
-              <Button disableRipple size='large' variant='text' component={Link} href='/signin' >
-                Sign <span style={{ color: theme.palette.green.light, marginLeft: '5px' }}>{' '} In</span>{' '}
+              <Button
+                disableRipple
+                size='large'
+                variant='text'
+                component={Link}
+                href='/signin'
+                style={{marginRight: '1em'}}
+              >
+                Sign{' '}
+                <span
+                  style={{
+                    color: theme.palette.green.light,
+                    marginLeft: '5px',
+                  }}
+                >
+                  {' '}
+                  In
+                </span>{' '}
               </Button>
-              <Button disableRipple size='large' variant='text' component={Link}  href='/signup'>
-                Sign <span style={{ color: theme.palette.green.light, marginLeft: '5px' }}>{' '} Up</span>
+              <Button
+                disableRipple
+                size='large'
+                variant='text'
+                component={Link}
+                href='/signup'
+              >
+                Sign{' '}
+                <span
+                  style={{
+                    color: theme.palette.green.light,
+                    marginLeft: '5px',
+                  }}
+                >
+                  {' '}
+                  Up
+                </span>
               </Button>
             </div>
           </div>
@@ -206,4 +251,4 @@ function Header() {
   );
 }
 
-export default React.memo(Header)
+export default React.memo(Header);
