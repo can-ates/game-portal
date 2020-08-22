@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -9,6 +11,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
 
 import Link from '../../../src/Link';
 
@@ -92,11 +99,23 @@ const useStyles = makeStyles(theme => ({
   sign: {
     display: 'flex',
   },
+  searchResult: {
+    position: 'absolute',
+    backgroundColor: theme.palette.green.light,
+    width: '100%',
+    borderRadius: '5px',
+    zIndex: '11',
+  },
 }));
 
 function Header() {
+  const CancelToken = axios.CancelToken;
+  let cancel;
+
   const theme = useTheme();
   const classes = useStyles();
+  const [search, setSearch] = React.useState('')
+  const [results, setResults] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -149,9 +168,36 @@ function Header() {
     ></Menu>
   );
 
+  const handleSearch = e => {
+    setSearch(e.target.value)
+    setResults([]);
+    cancel && cancel();
+
+    axios
+      .get(`https://api.rawg.io/api/games?search=${search}&page_size=5`, {
+        headers: {
+          'User-Agent': 'game-portal',
+        },
+        cancelToken: new CancelToken(c => (cancel = c)),
+      })
+      .then(res => {
+        console.log(res.data.results);
+        setResults(res.data.results);
+      })
+      .catch(thrown => {
+        if (axios.isCancel(thrown))
+          console.log('Request canceled', thrown.message);
+      });
+  };
+
   return (
     <div className={classes.grow}>
-      <AppBar style={{padding: '1em 0'}} position='static' color='transparent' elevation={0}>
+      <AppBar
+        style={{ padding: '1em 0' }}
+        position='static'
+        color='transparent'
+        elevation={0}
+      >
         <Toolbar disableGutters>
           <IconButton
             edge='start'
@@ -160,12 +206,7 @@ function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Button
-            variant='text'
-            disableRipple
-            component={Link}
-            href='/'
-          >
+          <Button variant='text' disableRipple component={Link} href='/'>
             <Typography className={classes.title} variant='h5' noWrap>
               Game
             </Typography>
@@ -184,6 +225,9 @@ function Header() {
               <SearchIcon />
             </div>
             <InputBase
+              onChange={handleSearch}
+              type='text'
+              value={search}
               placeholder='Search…'
               classes={{
                 root: classes.inputRoot,
@@ -191,15 +235,28 @@ function Header() {
               }}
               inputProps={{ 'aria-label': 'search' }}
             />
-            <Button
-              variant='contained'
-              color='primary'
-              component={Link}
-              naked
-              href='/about'
-            >
-              about
-            </Button>
+            {search && <div className={classes.searchResult}>
+            <List>
+              {results.map(result => {
+                return (
+                  <ListItem divider={true} dense={true}>
+                    <ListItemAvatar>
+                      <Avatar
+                        alt={`Avatar of ${result.name}`}
+                        src={result.background_image}
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      disableTypography
+                      primary={
+                        <Typography variant='body1'>{result.name}</Typography>
+                      }
+                    />
+                  </ListItem>
+                );
+              })}
+            </List>
+          </div>}
           </div>
           <div className={classes.grow} />
           <div className={classes.sign}>
@@ -210,7 +267,7 @@ function Header() {
                 variant='text'
                 component={Link}
                 href='/signin'
-                style={{marginRight: '1em'}}
+                style={{ marginRight: '1em' }}
               >
                 Sign{' '}
                 <span

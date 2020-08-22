@@ -7,7 +7,9 @@ import { Button } from '@material-ui/core';
 
 const GameCard = dynamic(() => import('../src/components/GameCard'));
 
-const fetcher = url => axios.get(url).then(res => res.data.results);
+const fetcher = url => axios.get(url, {
+  headers : {'User-Agent': 'game-portal'}
+}).then(res => res.data.results);
 
 function Index(props) {
   const observer = useRef()
@@ -98,7 +100,7 @@ function Index(props) {
 
 export async function getServerSideProps() {
   const res = await axios.get('https://api.rawg.io/api/games?page_size=40', {
-    headers: { 'User-Agent': 'gameportal' },
+    headers: { 'User-Agent': 'game-portal' },
   });
 
   return {

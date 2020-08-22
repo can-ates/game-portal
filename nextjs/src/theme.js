@@ -40,6 +40,10 @@ const theme = createMuiTheme({
       color: '#4AD87F',
       fontSize: "1.4rem"
     },
+    body1 : {
+      fontWeight: '800',
+      fontSize: "1.1rem"
+    },
     subtitle1 :{
       fontWeight: '800',
       color: '#4AD87F',
