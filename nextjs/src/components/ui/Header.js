@@ -212,7 +212,7 @@ function Header() {
             </Typography>
             <Typography
               className={classes.title}
-              style={{ color: theme.palette.green.light }}
+              style={{ color: theme.palette.green.light, marginLeft: '0.2em' }}
               variant='h5'
               noWrap
             >
@@ -267,7 +267,6 @@ function Header() {
                 variant='text'
                 component={Link}
                 href='/signin'
-                style={{ marginRight: '1em' }}
               >
                 Sign{' '}
                 <span

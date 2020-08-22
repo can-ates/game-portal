@@ -15,7 +15,7 @@ import { FaWindows } from 'react-icons/fa';
 import { FaXbox } from 'react-icons/fa';
 import { FaApple } from 'react-icons/fa';
 import { FaPlay } from 'react-icons/fa';
-import {AiOutlineDoubleRight} from 'react-icons/ai'
+import { AiOutlineDoubleRight } from 'react-icons/ai';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -23,19 +23,20 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     height: 'auto',
     width: 'auto',
-    maxHeight: '50em',
-    transition: 'all 0.7s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
+    transition: 'all 0.6s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
         position: 'absolute',
-        transform: 'scale(1.2)',
+        transform: 'scale(1.1)',
         cursor: 'pointer',
+        minHeight: '40em',
+        zIndex: '100'
       },
     },
     borderRadius: '10px',
   },
   cardImage: {
-    transition: 'all 0.15s ease-in-out',
+    transition: 'all 0.3s ease-in-out',
     height: 'auto',
     width: '100%',
     minHeight: '30em',
@@ -47,11 +48,11 @@ const useStyles = makeStyles(theme => ({
     minHeight: '30em',
     width: '100%',
     objectFit: 'fill',
+    zIndex: '12'
   },
   videoDetail: {
     position: 'absolute',
-    transform: 'scale(1.2)',
-    bottom: '-11em',
+    bottom: '0',
     left: '0',
     zIndex: '100',
     width: '100%',
@@ -59,13 +60,14 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.secondary.main,
     borderBottomLeftRadius: '10px',
     borderBottomRightRadius: '10px',
+    '&:hover': {
+      cursor: 'pointer',
+    },
   },
   imageDetail: {
     position: 'absolute',
     bottom: '0',
     left: '0',
-
-    zIndex: '10',
     width: '100%',
     opacity: '0.8',
     backgroundColor: theme.palette.secondary.main,
@@ -94,11 +96,11 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     padding: '0.3em 0',
   },
-  similarButton : {
-    backgroundColor : theme.palette.green.light,
+  similarButton: {
+    backgroundColor: theme.palette.green.light,
     padding: '0.3em',
     marginTop: '1em',
-  }
+  },
 }));
 
 const GameCard = ({ info }) => {
@@ -125,22 +127,14 @@ const GameCard = ({ info }) => {
     [info.parent_platforms]
   );
 
-  const handleVideo = useCallback(
-    (e, time) => {
-      setTimeout(() => {
-        setShowVideo(e);
-      }, time);
-    },
-    [showVideo]
-  );
-
   return (
-    <div style={{ position: 'relative', height: '100%' }}>
+    <div  style={{ position: 'relative', height: '100%' }}>
       <Card
         className={classes.card}
         elevation={0}
-        onMouseOver={() => handleVideo(true, 150)}
-        onMouseLeave={() => handleVideo(false, 250)}
+        onMouseOver={() => setShowVideo(true)}
+        onMouseLeave={() => setShowVideo(false)}
+        style={{transform: showVideo ? 'scale(1.1)' : 'none'}}
       >
         {showVideo && info.clip ? (
           <div>
@@ -173,49 +167,50 @@ const GameCard = ({ info }) => {
             )}
           </div>
         )}
-      </Card>
-
-      {showVideo && (
-        <CardContent className={classes.videoDetail}>
-          {renderIcons()}
-          <Typography variant='subtitle1'>{info.name}</Typography>
-          <Divider />
-          <div className={classes.details}>
-            <Typography variant='caption'>Release date: </Typography>
-            <Typography variant='subtitle1'>{info.released}</Typography>
-          </div>
-          <Divider />
-          <div className={classes.details}>
-            <Typography variant='caption'>Genres: </Typography>
-            <div>
-              {info.genres.map(genre => (
-                <Typography
-                  display='inline'
-                  key={genre.name}
-                  variant='overline'
-                >
-                  {' '}
-                  {genre.name}
-                </Typography>
-              ))}
-            </div>
-          </div>
-          <Divider />
-
-          <Button
-          size='small'
-          fullWidth
-          endIcon={<AiOutlineDoubleRight/>}
-            variant='outlined'
-            className={classes.similarButton}
-            component={Link}
-            as={`/discovery/similar-to-${info.slug}`}
-            href={`/discovery/${[info.id]}`}
+        {showVideo && (
+          <CardContent className={classes.videoDetail}
           >
-            Show more like this
-          </Button>
-        </CardContent>
-      )}
+            {renderIcons()}
+            <Typography variant='subtitle1'>{info.name}</Typography>
+            <Divider />
+            <div className={classes.details}>
+              <Typography variant='caption'>Release date: </Typography>
+              <Typography variant='subtitle1'>{info.released}</Typography>
+            </div>
+            <Divider />
+            <div className={classes.details}>
+              <Typography variant='caption'>Genres: </Typography>
+              <div>
+                {info.genres.map(genre => (
+                  <Typography
+                    display='inline'
+                    key={genre.name}
+                    variant='overline'
+                  >
+                    {' '}
+                    {genre.name}
+                  </Typography>
+                ))}
+              </div>
+            </div>
+            <Divider />
+  
+            <Button
+              size='small'
+              fullWidth
+              endIcon={<AiOutlineDoubleRight />}
+              variant='outlined'
+              className={classes.similarButton}
+              component={Link}
+              as={`/discovery/similar-to-${info.slug}`}
+              href={`/discovery/${[info.id]}`}
+            >
+              Show more like this
+            </Button>
+          </CardContent>
+        )}
+      </Card>
+     
     </div>
   );
 };

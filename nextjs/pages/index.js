@@ -3,7 +3,7 @@ import {useSWRInfinite} from 'swr';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Grid from '@material-ui/core/Grid';
-import { Button } from '@material-ui/core';
+import { Button, Typography } from '@material-ui/core';
 
 const GameCard = dynamic(() => import('../src/components/GameCard'));
 
@@ -41,21 +41,24 @@ function Index(props) {
   if(error) return <p>error</p>
   if(!data) return <p>loaading</p>
 
-  const lastGameCardRef = useCallback(node => {
-    if(observer.current) observer.current.disconnect()
-    observer.current = new IntersectionObserver(entries => {
-      if(entries[0].isIntersecting) {
-        console.log('anan')
-      }
-    })
-    if(node) observer.current.observe(node)
+  //TODO handle INFINITE SCROLLING
+  // const lastGameCardRef = useCallback(node => {
+  //   if(observer.current) observer.current.disconnect()
+  //   observer.current = new IntersectionObserver(entries => {
+  //     if(entries[0].isIntersecting) {
+  //       console.log('anan')
+  //     }
+  //   })
+  //   if(node) observer.current.observe(node)
     
-  }, [size]);
+  // }, [size]);
 
   return (
-    <div style={{ marginTop: '4em', padding: 20 }}>
+    <div style={{ marginTop: '2em', padding: 20 }}>
       <Grid container direction='column'>
-      <Button onClick={() => setSize(size + 1)}>ADD</Button>
+      <Grid item>
+        <Typography align='left' style={{marginBottom: '1.250em'}} variant='h1'>All Games</Typography>
+      </Grid>
         <Grid
           item
 
@@ -68,7 +71,6 @@ function Index(props) {
             if (games.length === i + 1) {
               return (
                 <Grid
-                  ref={lastGameCardRef}
                   item
                   md={3}
                   sm={6}
@@ -99,7 +101,7 @@ function Index(props) {
 }
 
 export async function getServerSideProps() {
-  const res = await axios.get('https://api.rawg.io/api/games?page_size=40', {
+  const res = await axios.get('https://api.rawg.io/api/games?page_size=40&ordering=popularity', {
     headers: { 'User-Agent': 'game-portal' },
   });
 
