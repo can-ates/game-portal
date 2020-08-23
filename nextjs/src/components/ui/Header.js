@@ -239,7 +239,7 @@ function Header() {
             <List>
               {results.map(result => {
                 return (
-                  <ListItem divider={true} dense={true}>
+                  <ListItem divider={true}>
                     <ListItemAvatar>
                       <Avatar
                         alt={`Avatar of ${result.name}`}

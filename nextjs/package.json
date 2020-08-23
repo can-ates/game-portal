@@ -8,12 +8,14 @@
     "@welldone-software/why-did-you-render": "^4.3.1",
     "axios": "^0.19.2",
     "clsx": "latest",
+    "formik": "^2.1.5",
     "next": "latest",
     "prop-types": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-icons": "^3.11.0",
-    "swr": "^0.3.1"
+    "swr": "^0.3.1",
+    "yup": "^0.29.3"
   },
   "scripts": {
     "dev": "next",

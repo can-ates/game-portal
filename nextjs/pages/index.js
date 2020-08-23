@@ -1,67 +1,76 @@
-import React, { useRef, useCallback } from 'react';
-import {useSWRInfinite} from 'swr';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useSWRInfinite } from 'swr';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Grid from '@material-ui/core/Grid';
 import { Button, Typography } from '@material-ui/core';
+import { useTheme } from '@material-ui/core/styles';
 
 const GameCard = dynamic(() => import('../src/components/GameCard'));
 
-const fetcher = url => axios.get(url, {
-  headers : {'User-Agent': 'game-portal'}
-}).then(res => res.data.results);
+const fetcher = url =>
+  axios
+    .get(url, {
+      headers: { 'User-Agent': 'game-portal' },
+    })
+    .then(res => res.data.results);
 
 function Index(props) {
-  const observer = useRef()
-  const {
-    data,
-    error,
-    size,
-    setSize,
-
-  } = useSWRInfinite(index =>
-    `https://api.rawg.io/api/games?page_size=40&page=${index + 1}`,
+  const observer = useRef();
+  const [page, setPage] = useState(1);
+  const theme = useTheme();
+  const { data, error, size, setSize } = useSWRInfinite(
+    index => `https://api.rawg.io/api/games?page_size=40&page=${index + 1}`,
     fetcher,
-    { initialData: props.games,
-    initialSize: 1,
-      
-    }
+    { initialData: props.games, initialSize: 1 }
   );
 
-  if(error) return <p>Error occured</p>
-  if(!data) return <p>Loading</p>
+  if (error) return <p>Error occured</p>;
+  if (!data) return <p>Loading</p>;
 
-  let games = []
+  let games = [];
 
-  for(let i = 0; i<data.length; i++){
-    games = games.concat(data[i])
+  for (let i = 0; i < data.length; i++) {
+    games = games.concat(data[i]);
   }
+
   
-
-  if(error) return <p>error</p>
-  if(!data) return <p>loaading</p>
-
-  //TODO handle INFINITE SCROLLING
-  // const lastGameCardRef = useCallback(node => {
-  //   if(observer.current) observer.current.disconnect()
-  //   observer.current = new IntersectionObserver(entries => {
-  //     if(entries[0].isIntersecting) {
-  //       console.log('anan')
-  //     }
-  //   })
-  //   if(node) observer.current.observe(node)
-    
-  // }, [size]);
+  const lastGameCardRef = useCallback(
+    node => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+      observer.current = new IntersectionObserver(
+        entries => {
+          if (entries[0].isIntersecting) {
+            
+              setSize(size + 1);
+              observer.current.disconnect();
+            
+          }
+        },
+        { rootMargin: '150px' }
+      );
+      if (node) observer.current.observe(node);
+    },
+    [size]
+  );
 
   return (
-    <div style={{ marginTop: '2em', padding: 20 }}>
+    <div style={{ margin: '2em 0', padding: 20 }}>
       <Grid container direction='column'>
-      <Grid item>
-        <Typography align='left' style={{marginBottom: '1.250em'}} variant='h1'>All Games</Typography>
-      </Grid>
+        <Grid item>
+          <Typography
+            align='left'
+            style={{ marginBottom: '1.250em' }}
+            variant='h1'
+          >
+            All Games
+          </Typography>
+        </Grid>
+
         <Grid
           item
-
           container
           spacing={10}
           direction='row'
@@ -70,15 +79,27 @@ function Index(props) {
           {games.map((game, i) => {
             if (games.length === i + 1) {
               return (
-                <Grid
-                  item
-                  md={3}
-                  sm={6}
-                  key={game.id}
-                  style={{ padding: '2em' }}
-                >
-                  <GameCard info={game} key={i} />
-                </Grid>
+                <React.Fragment key={game.id}>
+                  <Grid
+                    item
+                    md={3}
+                    sm={6}
+                    style={{ padding: '2em' }}
+                    ref={lastGameCardRef}
+                  >
+                    <GameCard info={game} key={i} />
+                  </Grid>
+
+                  <Button
+                    style={{
+                      backgroundColor: theme.palette.green.dark,
+                      margin: '15em auto 5em auto',
+                    }}
+                    
+                  >
+                    Load More
+                  </Button>
+                </React.Fragment>
               );
             } else {
               return (
@@ -101,9 +122,12 @@ function Index(props) {
 }
 
 export async function getServerSideProps() {
-  const res = await axios.get('https://api.rawg.io/api/games?page_size=40&ordering=popularity', {
-    headers: { 'User-Agent': 'game-portal' },
-  });
+  const res = await axios.get(
+    'https://api.rawg.io/api/games?page_size=40&ordering=popularity',
+    {
+      headers: { 'User-Agent': 'game-portal' },
+    }
+  );
 
   return {
     props: { games: res.data.results },

@@ -23,11 +23,11 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     height: 'auto',
     width: 'auto',
-    transition: 'all 0.6s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
+    transition: 'all 0.9s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
         position: 'absolute',
-        transform: 'scale(1.1)',
+        transform: 'scale(1.2)',
         cursor: 'pointer',
         minHeight: '40em',
         zIndex: '100'
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '10px',
   },
   cardImage: {
-    transition: 'all 0.3s ease-in-out',
+    transition: 'all 0.9s ease-in-out',
     height: 'auto',
     width: '100%',
     minHeight: '30em',
@@ -134,7 +134,6 @@ const GameCard = ({ info }) => {
         elevation={0}
         onMouseOver={() => setShowVideo(true)}
         onMouseLeave={() => setShowVideo(false)}
-        style={{transform: showVideo ? 'scale(1.1)' : 'none'}}
       >
         {showVideo && info.clip ? (
           <div>
