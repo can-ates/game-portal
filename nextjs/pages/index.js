@@ -14,8 +14,9 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
+const Skeleton = dynamic(() => import('@material-ui/lab/Skeleton'));
 const GameCard = dynamic(() => import('../src/components/GameCard'));
-const SortBar = dynamic(() => import('../src/components/SortBar'))
+const SortBar = dynamic(() => import('../src/components/SortBar'));
 
 const fetcher = url =>
   axios
@@ -26,13 +27,18 @@ const fetcher = url =>
 
 function Index(props) {
   const observer = useRef();
-  const [genre, setGenre] = useState(undefined)
+  const [genre, setGenre] = useState(undefined);
+  const [first, setFirst] = useState(false);
+  const [loading, setLoading] = useState(false)
 
   const theme = useTheme();
   const { data, error, size, setSize, mutate } = useSWRInfinite(
-    size => `https://api.rawg.io/api/games?page_size=40&page=${size + 1}&genres=${genre}`,
+    size =>
+      `https://api.rawg.io/api/games?page_size=40&page=${
+        size + 1
+      }&genres=${genre}`,
     fetcher,
-    { initialData: props.games, initialSize: 1, revalidateOnMount: true }
+    { initialData: props.games, initialSize: 1, revalidateOnMount: first }
   );
 
   if (error) return <p>Error occured</p>;
@@ -49,25 +55,33 @@ function Index(props) {
       if (observer.current) {
         observer.current.disconnect();
       }
-      observer.current = new IntersectionObserver(
-        entries => {
-          if (entries[0].isIntersecting) {
-            setSize(size + 1);
-            observer.current.disconnect();
-          }
-        },
-      );
+      observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          setSize(size + 1);
+          observer.current.disconnect();
+        }
+      });
       if (node) observer.current.observe(node);
     },
     [size]
   );
 
-  const handleSorting = useCallback((e) => {
-    console.log(e)
-    
-    setSize(0)
-    setGenre(e)
-  }, [])
+  useEffect(() => {
+    if(loading){
+      setTimeout(() => {
+        setLoading(false)
+      }, 1000)
+    }
+
+  }, [genre]);
+
+  const handleSorting = useCallback(e => {
+    console.log(e);
+    setFirst(true);
+    setLoading(true)
+    setSize(0);
+    setGenre(e);
+  }, []);
 
   return (
     <div style={{ margin: '2em 0', padding: 20 }}>
@@ -79,13 +93,11 @@ function Index(props) {
               style={{ marginBottom: '1.250em' }}
               variant='h1'
             >
-              All Games
+              {genre ? genre.toUpperCase() : 'All Games'}
             </Typography>
           </Grid>
           <Grid item>
-            <SortBar
-              handleSorting={handleSorting}
-            />
+            <SortBar handleSorting={handleSorting} />
           </Grid>
         </Grid>
 
@@ -96,6 +108,12 @@ function Index(props) {
           direction='row'
           justify='space-between'
         >
+          {loading && Array.from({ length: 20 }).map(() => (
+            <Grid item md={3} sm={6} style={{ padding: '2em' }}>
+              <Skeleton animation='wave' variant='rect' width={300} height={350} />
+            </Grid>
+          ))}
+
           {games.map((game, i) => {
             if (games.length === i + 1) {
               return (
