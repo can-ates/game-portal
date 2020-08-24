@@ -72,9 +72,24 @@ const theme = createMuiTheme({
           backgroundColor: 'none'
         }
       }
+    },
+    MuiInputLabel :{
+      root: {
+        color: 'white'
+      }
+    },
+    MuiFormControl: {
+      root : {
+        borderBottom: '2px solid white',
+      },
+    },
+    MuiSelect: {
+      icon: {
+        color :'white'
+      }
     }
     
-  }
+  } 
 });
 
 export default theme;

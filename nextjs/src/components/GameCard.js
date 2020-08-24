@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
         position: 'absolute',
-        transform: 'scale(1.2)',
+        transform: 'scale(1.15)',
         cursor: 'pointer',
         minHeight: '40em',
         zIndex: '100'
