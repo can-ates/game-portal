@@ -66,10 +66,16 @@ const SortBar = props => {
   if (error) return <div>failed to load</div>;
   if (!data) return <div>loading...</div>;
 
-  const handleSort = e => {
+  const handleSort = event => {
     // props.handleSorting(e.target.value)
     // props.handleSorting(e.target.innerText.split(' ').join('-').toLowerCase())
-    console.log(e.target.innerText.split(' ').join('-').toLowerCase());
+    // props.handleSorting(`${props.type}=`+e.target.innerText.split(' ').join('-').toLowerCase());
+
+    data.map((d) => {
+      if(d.slug === event.target.innerText.split(' ').join('-').toLowerCase()){
+        props.handleSorting(`${props.type}=`+ d.id, d.name)
+      }
+    })
   };
 
   const handleClick = () => {
@@ -146,17 +152,17 @@ const SortBar = props => {
       >
         {data.slice(0, 3).map(data => {
           return (
-            <ListItem button key={data.id} disableGutters>
+            <ListItem button  key={data.id} data-key={data.id} disableGutters>
               <ListItemIcon>{renderIcons(data)}</ListItemIcon>
               <ListItemText onClick={handleSort} primary={data.name} />
             </ListItem>
           );
         })}
-        <Collapse in={open} timeout='1' unmountOnExit>
+        <Collapse in={open} timeout={1} unmountOnExit>
           <List component='div'>
             {data.slice(3, data.length).map(data => {
               return (
-                <ListItem disableGutters button key={data.id}>
+                <ListItem disableGutters button data-key={data.id} key={data.id}>
                   <ListItemIcon >{renderIcons(data)}</ListItemIcon>
                   <ListItemText onClick={handleSort} primary={data.name} />
                 </ListItem>

@@ -27,9 +27,11 @@ const fetcher = url =>
 
 function Index(props) {
   const observer = useRef();
+  const [title, setTitle] = useState('All Games')
   const [genre, setGenre] = useState(null);
-  const [order, setOrder] = useState(null);
+  const [platform, setPlatform] = useState(null);
   const [tag, setTag] = useState(null);
+  const [store, setStore] = useState(null);
   const [first, setFirst] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +40,7 @@ function Index(props) {
     size =>
       `https://api.rawg.io/api/games?page_size=40&page=${
         size + 1
-      }&${genre}&${order}&${tag}`,
+      }&${genre}&${platform}&${tag}&${store}`,
     fetcher,
     { initialData: props.games, initialSize: 1, revalidateOnMount: first }
   );
@@ -74,27 +76,39 @@ function Index(props) {
         setLoading(false);
       }, 1300);
     }
-  }, [genre, tag, order]);
+  }, [genre, tag, platform, store]);
 
-  const handleSorting = useCallback(e => {
-    console.log(e);
+  const handleSorting = useCallback((e, name) => {
     setFirst(true);
     setLoading(true);
     setSize(0);
 
-    if (e === 'All Games') {
-      setGenre(null);
-      setTag(null);
-    }
-
     if (e.split('=')[0] === 'tags') {
       setTag(e);
       setGenre(null);
+      setPlatform(null);
+      setStore(null);
     }
     if (e.split('=')[0] === 'genres') {
       setGenre(e);
       setTag(null);
+      setPlatform(null);
+      setStore(null);
     }
+    if (e.split('=')[0] === 'platforms') {
+      setPlatform(e);
+      setGenre(null);
+      setTag(null);
+      setStore(null);
+    }
+
+    if (e.split('=')[0] === 'stores') {
+      setStore(e);
+      setGenre(null);
+      setTag(null);
+      setPlatform(null);
+    }
+    setTitle(name)
   }, []);
 
   return (
@@ -107,11 +121,7 @@ function Index(props) {
               style={{ marginBottom: '1.250em' }}
               variant='h1'
             >
-              {genre
-                ? genre.toUpperCase().split('=')[1]
-                : tag
-                ? tag.toUpperCase().split('=')[1]
-                : 'All Games'}
+              {title}
             </Typography>
           </Grid>
         </Grid>
@@ -125,7 +135,11 @@ function Index(props) {
               <SortBar type='tags' size='13' handleSorting={handleSorting} />
             </Grid>
             <Grid item>
-              <SortBar type='platforms' size='20' handleSorting={handleSorting} />
+              <SortBar
+                type='platforms'
+                size='20'
+                handleSorting={handleSorting}
+              />
             </Grid>
             <Grid item>
               <SortBar type='stores' size='8' handleSorting={handleSorting} />
@@ -147,6 +161,7 @@ function Index(props) {
                     variant='rect'
                     width={250}
                     height={350}
+                    style={{borderRadius: '5px'}}
                   />
                 </Grid>
               ))}
@@ -165,15 +180,6 @@ function Index(props) {
                     >
                       <GameCard info={game} key={i} />
                     </Grid>
-
-                    <Button
-                      style={{
-                        backgroundColor: theme.palette.green.dark,
-                        margin: '15em auto 5em auto',
-                      }}
-                    >
-                      Load More
-                    </Button>
                   </React.Fragment>
                 );
               } else {
