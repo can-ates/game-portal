@@ -27,7 +27,9 @@ const fetcher = url =>
 
 function Index(props) {
   const observer = useRef();
-  const [genre, setGenre] = useState(undefined);
+  const [genre, setGenre] = useState(null);
+  const [order, setOrder] = useState(null);
+  const [tag, setTag] = useState(null);
   const [first, setFirst] = useState(false);
   const [loading, setLoading] = useState(false)
 
@@ -36,7 +38,7 @@ function Index(props) {
     size =>
       `https://api.rawg.io/api/games?page_size=40&page=${
         size + 1
-      }&genres=${genre}`,
+      }&${genre}&${order}&${tag}`,
     fetcher,
     { initialData: props.games, initialSize: 1, revalidateOnMount: first }
   );
@@ -70,17 +72,26 @@ function Index(props) {
     if(loading){
       setTimeout(() => {
         setLoading(false)
-      }, 1000)
+      }, 1300)
     }
 
-  }, [genre]);
+  }, [genre,tag,order]);
 
   const handleSorting = useCallback(e => {
     console.log(e);
     setFirst(true);
     setLoading(true)
     setSize(0);
-    setGenre(e);
+
+    if(e.split('=')[0] === 'tags') {
+      setTag(e)
+      setGenre(null)
+    }
+    if(e.split('=')[0] === 'genres') {
+      setGenre(e)
+      setTag(null)
+    }
+
   }, []);
 
   return (
@@ -93,7 +104,7 @@ function Index(props) {
               style={{ marginBottom: '1.250em' }}
               variant='h1'
             >
-              {genre ? genre.toUpperCase() : 'All Games'}
+              {genre ? genre.toUpperCase().split('=')[1] : tag ? tag.toUpperCase().split('=')[1] : 'All Games'}
             </Typography>
           </Grid>
           <Grid item>

@@ -128,12 +128,12 @@ const GameCard = ({ info }) => {
   );
 
   return (
-    <div  style={{ position: 'relative', height: '100%' }}>
+    <div  style={{ position: 'relative', height: '100%' }} onMouseLeave={() => setShowVideo(false)}>
       <Card
         className={classes.card}
         elevation={0}
         onMouseOver={() => setShowVideo(true)}
-        onMouseLeave={() => setShowVideo(false)}
+        
       >
         {showVideo && info.clip ? (
           <div>
