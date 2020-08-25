@@ -31,7 +31,7 @@ function Index(props) {
   const [order, setOrder] = useState(null);
   const [tag, setTag] = useState(null);
   const [first, setFirst] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const theme = useTheme();
   const { data, error, size, setSize, mutate } = useSWRInfinite(
@@ -69,33 +69,36 @@ function Index(props) {
   );
 
   useEffect(() => {
-    if(loading){
+    if (loading) {
       setTimeout(() => {
-        setLoading(false)
-      }, 1300)
+        setLoading(false);
+      }, 1300);
     }
-
-  }, [genre,tag,order]);
+  }, [genre, tag, order]);
 
   const handleSorting = useCallback(e => {
     console.log(e);
     setFirst(true);
-    setLoading(true)
+    setLoading(true);
     setSize(0);
 
-    if(e.split('=')[0] === 'tags') {
-      setTag(e)
-      setGenre(null)
-    }
-    if(e.split('=')[0] === 'genres') {
-      setGenre(e)
-      setTag(null)
+    if (e === 'All Games') {
+      setGenre(null);
+      setTag(null);
     }
 
+    if (e.split('=')[0] === 'tags') {
+      setTag(e);
+      setGenre(null);
+    }
+    if (e.split('=')[0] === 'genres') {
+      setGenre(e);
+      setTag(null);
+    }
   }, []);
 
   return (
-    <div style={{ margin: '2em 0', padding: 20 }}>
+    <div style={{ margin: '2em 0', padding: '0 10 0 10' }}>
       <Grid container direction='column'>
         <Grid item container direction='row' justify='space-between'>
           <Grid item>
@@ -104,65 +107,84 @@ function Index(props) {
               style={{ marginBottom: '1.250em' }}
               variant='h1'
             >
-              {genre ? genre.toUpperCase().split('=')[1] : tag ? tag.toUpperCase().split('=')[1] : 'All Games'}
+              {genre
+                ? genre.toUpperCase().split('=')[1]
+                : tag
+                ? tag.toUpperCase().split('=')[1]
+                : 'All Games'}
             </Typography>
-          </Grid>
-          <Grid item>
-            <SortBar handleSorting={handleSorting} />
           </Grid>
         </Grid>
 
-        <Grid
-          item
-          container
-          spacing={10}
-          direction='row'
-          justify='space-between'
-        >
-          {loading && Array.from({ length: 20 }).map(() => (
-            <Grid item md={3} sm={6} style={{ padding: '2em' }}>
-              <Skeleton animation='wave' variant='rect' width={300} height={350} />
+        <Grid spacing={5} item container direction='row'>
+          <Grid justify='flex-start' md={2} item container direction='column'>
+            <Grid item>
+              <SortBar type='genres' size='13' handleSorting={handleSorting} />
             </Grid>
-          ))}
+            <Grid item>
+              <SortBar type='tags' size='13' handleSorting={handleSorting} />
+            </Grid>
+            <Grid item>
+              <SortBar type='platforms' size='20' handleSorting={handleSorting} />
+            </Grid>
+            <Grid item>
+              <SortBar type='stores' size='8' handleSorting={handleSorting} />
+            </Grid>
+          </Grid>
+          <Grid
+            item
+            container
+            md={10}
+            spacing={5}
+            direction='row'
+            justify='space-between'
+          >
+            {loading &&
+              Array.from({ length: 20 }).map(() => (
+                <Grid item xl={2} lg={3} md={4} sm={6}>
+                  <Skeleton
+                    animation='wave'
+                    variant='rect'
+                    width={250}
+                    height={350}
+                  />
+                </Grid>
+              ))}
 
-          {games.map((game, i) => {
-            if (games.length === i + 1) {
-              return (
-                <React.Fragment key={game.id}>
-                  <Grid
-                    item
-                    md={3}
-                    sm={6}
-                    style={{ padding: '2em' }}
-                    ref={lastGameCardRef}
-                  >
+            {games.map((game, i) => {
+              if (games.length === i + 1) {
+                return (
+                  <React.Fragment key={game.id}>
+                    <Grid
+                      item
+                      xl={2}
+                      lg={3}
+                      md={4}
+                      sm={6}
+                      ref={lastGameCardRef}
+                    >
+                      <GameCard info={game} key={i} />
+                    </Grid>
+
+                    <Button
+                      style={{
+                        backgroundColor: theme.palette.green.dark,
+                        margin: '15em auto 5em auto',
+                      }}
+                    >
+                      Load More
+                    </Button>
+                  </React.Fragment>
+                );
+              } else {
+                return (
+                  <Grid item xl={2} lg={3} md={4} sm={6} key={game.id}>
                     <GameCard info={game} key={i} />
                   </Grid>
-
-                  <Button
-                    style={{
-                      backgroundColor: theme.palette.green.dark,
-                      margin: '15em auto 5em auto',
-                    }}
-                  >
-                    Load More
-                  </Button>
-                </React.Fragment>
-              );
-            } else {
-              return (
-                <Grid
-                  item
-                  md={3}
-                  sm={6}
-                  key={game.id}
-                  style={{ padding: '2em' }}
-                >
-                  <GameCard info={game} key={i} />
-                </Grid>
-              );
-            }
-          })}
+                );
+              }
+            })}
+          </Grid>
         </Grid>
       </Grid>
     </div>

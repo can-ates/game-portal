@@ -23,13 +23,15 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     height: 'auto',
     width: 'auto',
+    maxWidth: '30em',
+    maxHeight: '25em',
     transition: 'all 0.9s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
         position: 'absolute',
         transform: 'scale(1.15)',
         cursor: 'pointer',
-        minHeight: '40em',
+        minHeight: '35em',
         zIndex: '100'
       },
     },
