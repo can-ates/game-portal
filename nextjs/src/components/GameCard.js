@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '../../src/Link';
 
@@ -16,6 +16,7 @@ import { FaXbox } from 'react-icons/fa';
 import { FaApple } from 'react-icons/fa';
 import { FaPlay } from 'react-icons/fa';
 import { AiOutlineDoubleRight } from 'react-icons/ai';
+import { BsArrowsFullscreen } from 'react-icons/bs';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -25,14 +26,15 @@ const useStyles = makeStyles(theme => ({
     width: 'auto',
     maxWidth: '30em',
     maxHeight: '25em',
-    transition: 'all 0.9s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
+    transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
         position: 'absolute',
         transform: 'scale(1.15)',
         cursor: 'pointer',
         minHeight: '35em',
-        zIndex: '100'
+        zIndex: '100',
+        backgroundColor: 'rgba(18,18,18, 0.8)',
       },
     },
     borderRadius: '10px',
@@ -46,20 +48,17 @@ const useStyles = makeStyles(theme => ({
   },
 
   cardVideo: {
-    height: 'auto',
-    minHeight: '30em',
+    height: '20em',
+    maxHeight: '20em',
     width: '100%',
     objectFit: 'fill',
-    zIndex: '12'
+    zIndex: '12',
   },
   videoDetail: {
     position: 'absolute',
-    bottom: '0',
-    left: '0',
+    bottom: '-10px',
     zIndex: '100',
     width: '100%',
-    opacity: '0.9',
-    backgroundColor: theme.palette.secondary.main,
     borderBottomLeftRadius: '10px',
     borderBottomRightRadius: '10px',
     '&:hover': {
@@ -103,11 +102,23 @@ const useStyles = makeStyles(theme => ({
     padding: '0.3em',
     marginTop: '1em',
   },
+  fullButton: {
+    position: 'absolute',
+    right: '0',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0.5em',
+    marginRight: '0.5em',
+    bottom: '15em',
+    color: theme.palette.green.light,
+    backgroundColor: 'rgba(18,18,18, 0.4)',
+  },
 }));
 
 const GameCard = ({ info }) => {
   const [showVideo, setShowVideo] = useState(false);
-
+  const media = useRef();
   const classes = useStyles();
 
   const renderIcons = useCallback(
@@ -130,89 +141,102 @@ const GameCard = ({ info }) => {
   );
 
   return (
-    <div  style={{ position: 'relative', height: '100%' }} onMouseLeave={() => setShowVideo(false)}>
-      <Card
-        className={classes.card}
-        elevation={0}
+    <React.Fragment>
+      <div
+        style={{ position: 'relative', height: '100%' }}
         onMouseOver={() => setShowVideo(true)}
-        
       >
-        {showVideo && info.clip ? (
-          <div>
-            <CardMedia
-              muted={true}
-              autoPlay={true}
-              loop={true}
-              poster={info.clip ? info.clip.preview : undefined}
-              elevation={0}
-              component='video'
-              className={classes.cardVideo}
-              src={info.clip.clips['640']}
-            />
-          </div>
-        ) : (
-          <div>
-            <CardMedia
-              elevation={0}
-              component='img'
-              className={classes.cardImage}
-              image={info.background_image}
-            />
-            {info.clip && <FaPlay className={classes.playButton} />}
+        <Card
+          ref={media}
+          className={classes.card}
+          elevation={0}
+          onMouseLeave={() => setShowVideo(false)}
+        >
+          {showVideo && info.clip ? (
+            <div>
+              <CardMedia
+                muted={true}
+                autoPlay={true}
+                loop={true}
+                poster={info.clip ? info.clip.preview : undefined}
+                elevation={0}
+                component='video'
+                className={classes.cardVideo}
+                src={info.clip.clips['640']}
+              />
+              <Button
+                size='large'
+                variant='outlined'
+                className={classes.fullButton}
+                href={`https://www.youtube.com/watch?v=${info.clip.video}`}
+                target='__blank'
+              >
+                <FaPlay style={{marginRight: '1em'}} fontSize='0.6rem'/>
+                <Typography variant='overline'>Full Video</Typography>
+              </Button>
+            </div>
+          ) : (
+            <div>
+              <CardMedia
+                elevation={0}
+                component='img'
+                className={classes.cardImage}
+                image={info.background_image}
+              />
+              {info.clip && <FaPlay className={classes.playButton} />}
 
-            {showVideo ? null : (
-              <CardContent className={classes.imageDetail}>
-                {renderIcons()}
-                <Typography variant='h6'>{info.name}</Typography>
-              </CardContent>
-            )}
-          </div>
-        )}
-        {showVideo && (
-          <CardContent className={classes.videoDetail}
-          >
-            {renderIcons()}
-            <Typography variant='subtitle1'>{info.name}</Typography>
-            <Divider />
-            <div className={classes.details}>
-              <Typography variant='caption'>Release date: </Typography>
-              <Typography variant='subtitle1'>{info.released}</Typography>
+              {showVideo ? null : (
+                <CardContent className={classes.imageDetail}>
+                  {renderIcons()}
+                  <Typography variant='h6'>{info.name}</Typography>
+                </CardContent>
+              )}
             </div>
-            <Divider />
-            <div className={classes.details}>
-              <Typography variant='caption'>Genres: </Typography>
-              <div>
-                {info.genres.map(genre => (
-                  <Typography
-                    display='inline'
-                    key={genre.name}
-                    variant='overline'
-                  >
-                    {' '}
-                    {genre.name}
-                  </Typography>
-                ))}
+          )}
+          {showVideo && (
+            <CardContent className={classes.videoDetail}>
+              {renderIcons()}
+              <Typography variant='subtitle1'>{info.name}</Typography>
+              <Divider />
+              <div className={classes.details}>
+                <Typography variant='caption'>Release date: </Typography>
+                <Typography variant='subtitle1'>{info.released}</Typography>
               </div>
-            </div>
-            <Divider />
-  
-            <Button
-              size='small'
-              fullWidth
-              endIcon={<AiOutlineDoubleRight />}
-              variant='outlined'
-              className={classes.similarButton}
-              component={Link}
-              as={`/discovery/similar-to-${info.slug}`}
-              href={`/discovery/${[info.id]}`}
-            >
-              Show more like this
-            </Button>
-          </CardContent>
-        )}
-      </Card>
-     
-    </div>
+              <Divider />
+              <div className={classes.details}>
+                <Typography variant='caption'>Genres: </Typography>
+                <div>
+                  {info.genres.map(genre => (
+                    <Typography
+                      display='inline'
+                      key={genre.name}
+                      variant='overline'
+                    >
+                      {' '}
+                      {genre.name}
+                    </Typography>
+                  ))}
+                </div>
+              </div>
+              <Divider />
+
+              <Button
+                size='small'
+                fullWidth
+                endIcon={<AiOutlineDoubleRight />}
+                variant='outlined'
+                className={classes.similarButton}
+                component={Link}
+                as={`/discovery/similar-to-${info.slug}`}
+                href={`/discovery/${[info.id]}`}
+              >
+                Show more like this
+              </Button>
+            </CardContent>
+          )}
+        </Card>
+      </div>
+    </React.Fragment>
   );
 };
 

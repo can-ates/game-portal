@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   icon : {
     color: 'white',
     margin: 'auto',
-    fontSize: '1rem'
+    fontSize: '1.5rem'
   }
 }));
 
@@ -72,7 +72,7 @@ const SortBar = props => {
     // props.handleSorting(`${props.type}=`+e.target.innerText.split(' ').join('-').toLowerCase());
 
     data.map((d) => {
-      if(d.slug === event.target.innerText.split(' ').join('-').toLowerCase()){
+      if(d.name === event.target.innerText){
         props.handleSorting(`${props.type}=`+ d.id, d.name)
       }
     })
@@ -129,8 +129,9 @@ const SortBar = props => {
   };
 
   return (
-    <div>
+    <div >
       <List
+      
         component='nav'
         aria-labelledby='nested-list-subheader'
         subheader={
@@ -158,7 +159,7 @@ const SortBar = props => {
             </ListItem>
           );
         })}
-        <Collapse in={open} timeout={1} unmountOnExit>
+        <Collapse in={open} timeout='auto' unmountOnExit>
           <List component='div'>
             {data.slice(3, data.length).map(data => {
               return (
@@ -170,10 +171,10 @@ const SortBar = props => {
             })}
           </List>
         </Collapse>
-        <ListItem button disableGutters>
+        <ListItem button disableGutters onClick={handleClick}>
           <ListItemText
             style={{ color: theme.palette.green.dark }}
-            onClick={handleClick}
+            
             primary={open ? 'Hide' : 'Show all'}
           />
         </ListItem>

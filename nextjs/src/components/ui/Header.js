@@ -206,7 +206,7 @@ function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Button variant='text' disableRipple component={Link} href='/'>
+          <Button  variant='text' disableRipple component={Link} href='/'>
             <Typography className={classes.title} variant='h5' noWrap>
               Game
             </Typography>

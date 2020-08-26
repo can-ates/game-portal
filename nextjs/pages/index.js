@@ -3,20 +3,26 @@ import { useSWRInfinite } from 'swr';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 
-import { useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 const Skeleton = dynamic(() => import('@material-ui/lab/Skeleton'));
 const GameCard = dynamic(() => import('../src/components/GameCard'));
 const SortBar = dynamic(() => import('../src/components/SortBar'));
+
+const useStyles = makeStyles(theme => ({
+  navbar: {
+    position: 'sticky',
+    top: '0',
+    overflowY: 'scroll',
+    height: '100vh',
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+  },
+}));
 
 const fetcher = url =>
   axios
@@ -27,7 +33,8 @@ const fetcher = url =>
 
 function Index(props) {
   const observer = useRef();
-  const [title, setTitle] = useState('All Games')
+  const classes = useStyles();
+  const [title, setTitle] = useState('All Games');
   const [genre, setGenre] = useState(null);
   const [platform, setPlatform] = useState(null);
   const [tag, setTag] = useState(null);
@@ -35,8 +42,7 @@ function Index(props) {
   const [first, setFirst] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const theme = useTheme();
-  const { data, error, size, setSize, mutate } = useSWRInfinite(
+  const { data, error, size, setSize } = useSWRInfinite(
     size =>
       `https://api.rawg.io/api/games?page_size=40&page=${
         size + 1
@@ -108,7 +114,7 @@ function Index(props) {
       setTag(null);
       setPlatform(null);
     }
-    setTitle(name)
+    setTitle(name);
   }, []);
 
   return (
@@ -128,22 +134,28 @@ function Index(props) {
 
         <Grid spacing={5} item container direction='row'>
           <Grid justify='flex-start' md={2} item container direction='column'>
-            <Grid item>
-              <SortBar type='genres' size='13' handleSorting={handleSorting} />
-            </Grid>
-            <Grid item>
-              <SortBar type='tags' size='13' handleSorting={handleSorting} />
-            </Grid>
-            <Grid item>
-              <SortBar
-                type='platforms'
-                size='20'
-                handleSorting={handleSorting}
-              />
-            </Grid>
-            <Grid item>
-              <SortBar type='stores' size='8' handleSorting={handleSorting} />
-            </Grid>
+            <div className={classes.navbar}>
+              <Grid item>
+                <SortBar
+                  type='genres'
+                  size='13'
+                  handleSorting={handleSorting}
+                />
+              </Grid>
+              <Grid item>
+                <SortBar type='tags' size='13' handleSorting={handleSorting} />
+              </Grid>
+              <Grid item>
+                <SortBar
+                  type='platforms'
+                  size='20'
+                  handleSorting={handleSorting}
+                />
+              </Grid>
+              <Grid item>
+                <SortBar type='stores' size='8' handleSorting={handleSorting} />
+              </Grid>
+            </div>
           </Grid>
           <Grid
             item
@@ -153,43 +165,42 @@ function Index(props) {
             direction='row'
             justify='space-between'
           >
-            {loading &&
-              Array.from({ length: 20 }).map(() => (
-                <Grid item xl={2} lg={3} md={4} sm={6}>
-                  <Skeleton
-                    animation='wave'
-                    variant='rect'
-                    width={250}
-                    height={350}
-                    style={{borderRadius: '5px'}}
-                  />
-                </Grid>
-              ))}
-
-            {games.map((game, i) => {
-              if (games.length === i + 1) {
-                return (
-                  <React.Fragment key={game.id}>
-                    <Grid
-                      item
-                      xl={2}
-                      lg={3}
-                      md={4}
-                      sm={6}
-                      ref={lastGameCardRef}
-                    >
-                      <GameCard info={game} key={i} />
-                    </Grid>
-                  </React.Fragment>
-                );
-              } else {
-                return (
-                  <Grid item xl={2} lg={3} md={4} sm={6} key={game.id}>
-                    <GameCard info={game} key={i} />
+            {loading
+              ? Array.from({ length: 20 }).map(() => (
+                  <Grid item xl={2} lg={3} md={4} sm={6}>
+                    <Skeleton
+                      animation='wave'
+                      variant='rect'
+                      width={250}
+                      height={350}
+                      style={{ borderRadius: '5px' }}
+                    />
                   </Grid>
-                );
-              }
-            })}
+                ))
+              : games.map((game, i) => {
+                  if (games.length === i + 1) {
+                    return (
+                      <React.Fragment key={game.id}>
+                        <Grid
+                          item
+                          xl={2}
+                          lg={3}
+                          md={4}
+                          sm={6}
+                          ref={lastGameCardRef}
+                        >
+                          <GameCard info={game} key={i} />
+                        </Grid>
+                      </React.Fragment>
+                    );
+                  } else {
+                    return (
+                      <Grid item xl={2} lg={3} md={4} sm={6} key={game.id}>
+                        <GameCard info={game} key={i} />
+                      </Grid>
+                    );
+                  }
+                })}
           </Grid>
         </Grid>
       </Grid>
