@@ -7,6 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../src/theme';
 import Header from '../src/components/ui/Header';
 import whyDidYouRender from '@welldone-software/why-did-you-render';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   whyDidYouRender(React);

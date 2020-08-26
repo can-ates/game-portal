@@ -1,6 +1,8 @@
 import React, { useState, useCallback, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '../../src/Link';
+import { LazyLoadImage, trackWindowScroll } from 'react-lazy-load-image-component';
+
 
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -16,7 +18,6 @@ import { FaXbox } from 'react-icons/fa';
 import { FaApple } from 'react-icons/fa';
 import { FaPlay } from 'react-icons/fa';
 import { AiOutlineDoubleRight } from 'react-icons/ai';
-import { BsArrowsFullscreen } from 'react-icons/bs';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -31,7 +32,6 @@ const useStyles = makeStyles(theme => ({
       '&:hover': {
         position: 'absolute',
         transform: 'scale(1.15)',
-        cursor: 'pointer',
         minHeight: '35em',
         zIndex: '100',
         backgroundColor: 'rgba(18,18,18, 0.8)',
@@ -114,9 +114,17 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.green.light,
     backgroundColor: 'rgba(18,18,18, 0.4)',
   },
+  gameName: {
+    color: theme.palette.green.light,
+    display: 'block',
+    '&:hover': {
+      color: 'white',
+      transform: 'scale(1.01)',
+    },
+  },
 }));
 
-const GameCard = ({ info }) => {
+const GameCard = ({ info, scrollPosition }) => {
   const [showVideo, setShowVideo] = useState(false);
   const media = useRef();
   const classes = useStyles();
@@ -171,18 +179,19 @@ const GameCard = ({ info }) => {
                 href={`https://www.youtube.com/watch?v=${info.clip.video}`}
                 target='__blank'
               >
-                <FaPlay style={{marginRight: '1em'}} fontSize='0.6rem'/>
+                <FaPlay style={{ marginRight: '1em' }} fontSize='0.6rem' />
                 <Typography variant='overline'>Full Video</Typography>
               </Button>
             </div>
           ) : (
             <div>
-              <CardMedia
-                elevation={0}
-                component='img'
+              <LazyLoadImage
                 className={classes.cardImage}
-                image={info.background_image}
+                src={info.background_image}
+                effect='blur'
+                scrollPosition={scrollPosition}
               />
+
               {info.clip && <FaPlay className={classes.playButton} />}
 
               {showVideo ? null : (
@@ -196,7 +205,14 @@ const GameCard = ({ info }) => {
           {showVideo && (
             <CardContent className={classes.videoDetail}>
               {renderIcons()}
-              <Typography variant='subtitle1'>{info.name}</Typography>
+              <Typography
+                className={classes.gameName}
+                component={Link}
+                href={`/games/${[info.slug]}`}
+                variant='subtitle1'
+              >
+                {info.name}
+              </Typography>
               <Divider />
               <div className={classes.details}>
                 <Typography variant='caption'>Release date: </Typography>
