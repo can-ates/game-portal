@@ -151,7 +151,7 @@ function Index(props) {
                 />
               </Grid>
               <Grid item>
-                <SortBar type='stores' size='8' handleSorting={handleSorting} />
+                <SortBar type='stores' size='11' handleSorting={handleSorting} />
               </Grid>
             </div>
           </Grid>
@@ -206,14 +206,13 @@ function Index(props) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const res = await axios.get('https://api.rawg.io/api/games?page_size=40', {
     headers: { 'User-Agent': 'GamePortal/0.8' },
   });
 
   return {
     props: { games: res.data.results },
-    revalidate: 1,
   };
 }
 

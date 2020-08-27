@@ -22,6 +22,8 @@ import { SiNintendoswitch } from 'react-icons/si';
 import { SiAndroid } from 'react-icons/si';
 import { SiNintendo3Ds } from 'react-icons/si';
 import { SiGroupon } from 'react-icons/si';
+import { SiEpicgames } from 'react-icons/si';
+import { SiItchDotIo } from 'react-icons/si';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -39,17 +41,14 @@ const useStyles = makeStyles(theme => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
-  icon : {
+  icon: {
     color: 'white',
     margin: 'auto',
-    fontSize: '1.5rem'
-  }
+    fontSize: '1.5rem',
+  },
 }));
 
-const fetcher = url =>
-  axios
-    .get(url)
-    .then(res => res.data.results);
+const fetcher = url => axios.get(url).then(res => res.data.results);
 
 const SortBar = props => {
   const [open, setOpen] = useState(false);
@@ -69,11 +68,11 @@ const SortBar = props => {
     // props.handleSorting(e.target.innerText.split(' ').join('-').toLowerCase())
     // props.handleSorting(`${props.type}=`+e.target.innerText.split(' ').join('-').toLowerCase());
 
-    data.map((d) => {
-      if(d.name === event.target.innerText){
-        props.handleSorting(`${props.type}=`+ d.id, d.name)
+    data.map(d => {
+      if (d.name === event.target.innerText) {
+        props.handleSorting(`${props.type}=` + d.id, d.name);
       }
-    })
+    });
   };
 
   const handleClick = () => {
@@ -102,6 +101,8 @@ const SortBar = props => {
         return <FaWindows key={info.name} className={classes.icon} />;
       case 'Steam':
         return <FaSteam key={info.name} className={classes.icon} />;
+      case 'Epic Games':
+        return <SiEpicgames key={info.name} className={classes.icon} />;
       case 'GOG':
         return <SiGroupon key={info.name} className={classes.icon} />;
       case 'Nintendo Switch':
@@ -121,15 +122,16 @@ const SortBar = props => {
         return <SiAndroid key={info.name} className={classes.icon} />;
       case 'Linux':
         return <FaLinux key={info.name} className={classes.icon} />;
+      case 'itch.io':
+        return <SiItchDotIo key={info.name} className={classes.icon} />;
       default:
         return <Avatar key={info.name} src={info.image_background} />;
     }
   };
 
   return (
-    <div >
+    <div>
       <List
-      
         component='nav'
         aria-labelledby='nested-list-subheader'
         subheader={
@@ -151,7 +153,7 @@ const SortBar = props => {
       >
         {data.slice(0, 3).map(data => {
           return (
-            <ListItem button  key={data.id} data-key={data.id} disableGutters>
+            <ListItem button key={data.id} data-key={data.id} disableGutters>
               <ListItemIcon>{renderIcons(data)}</ListItemIcon>
               <ListItemText onClick={handleSort} primary={data.name} />
             </ListItem>
@@ -161,8 +163,13 @@ const SortBar = props => {
           <List component='div'>
             {data.slice(3, data.length).map(data => {
               return (
-                <ListItem disableGutters button data-key={data.id} key={data.id}>
-                  <ListItemIcon >{renderIcons(data)}</ListItemIcon>
+                <ListItem
+                  disableGutters
+                  button
+                  data-key={data.id}
+                  key={data.id}
+                >
+                  <ListItemIcon>{renderIcons(data)}</ListItemIcon>
                   <ListItemText onClick={handleSort} primary={data.name} />
                 </ListItem>
               );
@@ -172,7 +179,6 @@ const SortBar = props => {
         <ListItem button disableGutters onClick={handleClick}>
           <ListItemText
             style={{ color: theme.palette.green.dark }}
-            
             primary={open ? 'Hide' : 'Show all'}
           />
         </ListItem>
