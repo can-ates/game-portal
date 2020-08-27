@@ -175,9 +175,6 @@ function Header() {
 
     axios
       .get(`https://api.rawg.io/api/games?search=${search}&page_size=5`, {
-        headers: {
-          'User-Agent': 'game-portal',
-        },
         cancelToken: new CancelToken(c => (cancel = c)),
       })
       .then(res => {

@@ -48,9 +48,7 @@ const useStyles = makeStyles(theme => ({
 
 const fetcher = url =>
   axios
-    .get(url, {
-      headers: { 'User-Agent': 'game-portal' },
-    })
+    .get(url)
     .then(res => res.data.results);
 
 const SortBar = props => {

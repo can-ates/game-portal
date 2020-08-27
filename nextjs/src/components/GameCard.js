@@ -25,8 +25,8 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     height: 'auto',
     width: 'auto',
-    maxWidth: '30em',
-    maxHeight: '25em',
+    maxWidth: '100%',
+    maxHeight: '100%',
     transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
@@ -41,10 +41,10 @@ const useStyles = makeStyles(theme => ({
   },
   cardImage: {
     transition: 'all 0.9s ease-in-out',
-    height: 'auto',
-    width: '100%',
-    minHeight: '30em',
-    objectFit: 'cover',
+    maxWidth: '100%',
+    maxHeight: '100%',
+    minHeight: '25em',
+    objectFit: 'cover'
   },
 
   cardVideo: {
@@ -55,9 +55,10 @@ const useStyles = makeStyles(theme => ({
     zIndex: '12',
   },
   videoDetail: {
+    height: 'auto',
     position: 'absolute',
     bottom: '-10px',
-    zIndex: '100',
+    zIndex: '1000',
     width: '100%',
     borderBottomLeftRadius: '10px',
     borderBottomRightRadius: '10px',
@@ -190,6 +191,7 @@ const GameCard = ({ info, scrollPosition }) => {
                 src={info.background_image}
                 effect='blur'
                 scrollPosition={scrollPosition}
+                placeholderSrc={info.clip ? info.clip.preview : null}
               />
 
               {info.clip && <FaPlay className={classes.playButton} />}

@@ -47,7 +47,7 @@ export async function getServerSideProps(context) {
   const res = await axios.get(
     `https://api.rawg.io/api/games/${slug}/suggested?page_size=40`,
     {
-      headers: { 'User-Agent': 'gameportal' },
+      headers: { 'User-Agent': 'Gameportal/0.8' },
     }
   );
 

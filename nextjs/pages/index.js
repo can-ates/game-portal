@@ -26,9 +26,7 @@ const useStyles = makeStyles(theme => ({
 
 const fetcher = url =>
   axios
-    .get(url, {
-      headers: { 'User-Agent': 'game-portal' },
-    })
+    .get(url)
     .then(res => res.data.results);
 
 function Index(props) {
@@ -210,11 +208,12 @@ function Index(props) {
 
 export async function getStaticProps() {
   const res = await axios.get('https://api.rawg.io/api/games?page_size=40', {
-    headers: { 'User-Agent': 'game-portal' },
+    headers: { 'User-Agent': 'GamePortal/0.8' },
   });
 
   return {
     props: { games: res.data.results },
+    revalidate: 1,
   };
 }
 
