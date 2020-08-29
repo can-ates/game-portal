@@ -8,6 +8,9 @@ import theme from '../src/theme';
 import Header from '../src/components/ui/Header';
 import whyDidYouRender from '@welldone-software/why-did-you-render';
 import 'react-lazy-load-image-component/src/effects/blur.css';
+import 'react-circular-progressbar/dist/styles.css';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
   whyDidYouRender(React);
@@ -37,7 +40,7 @@ export default function MyApp(props) {
         <Container maxWidth='xl'>
           <Header />
           <CssBaseline />
-          <Component {...pageProps} />
+          <Component {...pageProps} anan='ananin amini sikeyim' />
         </Container>
       </ThemeProvider>
     </React.Fragment>

@@ -5,9 +5,10 @@ import dynamic from 'next/dynamic';
 import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
-
-import { makeStyles } from '@material-ui/core/styles';
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Link from '../../src/Link';
+import Slider from 'react-slick'
 
 import Grid from '@material-ui/core/Grid';
 import Card from '@material-ui/core/Card';
@@ -16,10 +17,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 
 const Skeleton = dynamic(() => import('@material-ui/lab/Skeleton'));
 
-import { FaLinux } from 'react-icons/fa';
+import { FaLinux, FaPause } from 'react-icons/fa';
 import { FaXbox } from 'react-icons/fa';
 import { FaPlaystation } from 'react-icons/fa';
 import { FaSteam } from 'react-icons/fa/';
@@ -56,31 +58,59 @@ const useStyles = makeStyles(theme => ({
     backgroundImage: 'linear-gradient(180deg, transparent, #2D3142);',
   },
   wrapper: {
-    padding: '7em 15em',
+    padding: '7em 10em',
     border: '1px solid red',
   },
   about: {
     marginLeft: '1em',
   },
-  icon:{
+  icon: {
     marginLeft: '1em',
     fontSize: '1.3rem',
     color: theme.palette.green.light,
-    '&:hover':{
-        cursor: 'pointer',
-        color: 'white'
+    '&:hover': {
+      cursor: 'pointer',
+      color: 'white',
     },
     verticalAlign: 'middle',
-    display: 'inline' 
+    display: 'inline',
+  },
+  content: {
+    display: '-webkit-box',
+    '-webkit-line-clamp': '4',
+    '-webkit-box-orient': 'vertical',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+  },
+  gameImage:{
+    padding: '0.5em 1em',
+    objectFit: 'contain',
+    borderRadius: '20px',
+    transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
+    '&:hover' :{
+      transform: 'scale(1.1)'
+    }
   }
 }));
 
-function Game({ game }) {
+function Game({ game, images }) {
   const classes = useStyles();
   const router = useRouter();
+  const theme = useTheme();
+
 
   if (router.isFallback) {
     return <div>Loading...</div>;
+  }
+
+  const settings = {
+    infinite: true,
+    speed: 500,
+    lazyLoad: true,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    cssEase: 'linear',
+    
   }
 
   const renderIcons = info => {
@@ -93,42 +123,42 @@ function Game({ game }) {
       case 'PlayStation 2':
       case 'PS Vita':
       case 'PSP':
-        return <FaPlaystation key='PlayStation' className={classes.icon} />;
+        return <FaPlaystation className={classes.icon} />;
       case 'Xbox':
       case 'Xbox Store':
       case 'Xbox One':
       case 'Xbox Series X':
       case 'Xbox 360':
-        return <FaXbox key={info.name} className={classes.icon} />;
+        return <FaXbox className={classes.icon} />;
       case 'Epic Games':
-        return <SiEpicgames key={info.name} className={classes.icon} />;
+        return <SiEpicgames className={classes.icon} />;
       case 'PC':
-        return <FaWindows key={info.name} className={classes.icon} />;
+        return <FaWindows className={classes.icon} />;
       case 'Steam':
-        return <FaSteam key={info.name} className={classes.icon} />;
+        return <FaSteam className={classes.icon} />;
       case 'GOG':
-        return <SiGroupon key={info.name} className={classes.icon} />;
+        return <SiGroupon className={classes.icon} />;
       case 'Nintendo Switch':
       case 'Nintendo Store':
-        return <SiNintendoswitch key={info.name} className={classes.icon} />;
+        return <SiNintendoswitch className={classes.icon} />;
       case 'Nintendo DS':
       case 'Nintendo 3DS':
       case 'Nintendo DSi':
-        return <SiNintendo3Ds key={info.name} className={classes.icon} />;
+        return <SiNintendo3Ds className={classes.icon} />;
       case 'Apple Macintosh':
       case 'iOS':
       case 'macOS':
       case 'App Store':
-        return <FaApple key={info.name} className={classes.icon} />;
+        return <FaApple className={classes.icon} />;
       case 'Android':
       case 'Google Play':
-        return <SiAndroid key={info.name} className={classes.icon} />;
+        return <SiAndroid className={classes.icon} />;
       case 'Linux':
-        return <FaLinux key={info.name} className={classes.icon} />;
-        case 'itch.io':
-        return <SiItchDotIo key={info.name} className={classes.icon} />;
+        return <FaLinux className={classes.icon} />;
+      case 'itch.io':
+        return <SiItchDotIo className={classes.icon} />;
       default:
-        return 
+        return;
     }
   };
 
@@ -142,15 +172,15 @@ function Game({ game }) {
       </div>
       <div className={classes.wrapper}>
         <Grid container direction='column'>
-          <Grid item container direction='row'>
-            <Grid item md={4}></Grid>
-            <Grid item md={4}>
+          <Grid item container direction='row' style={{border: '1px solid red'}}>
+            <Grid item md={3}></Grid>
+            <Grid item md={6}>
               <Grid container direction='column'>
                 <Grid item>
                   <Typography variant='h1'>{game.name}</Typography>
                 </Grid>
-                <Grid item style={{margin: '1.3em 0 1em 0'}}>
-                  <Typography gutterBottom variant='h4' display='inline-block'>
+                <Grid item style={{ margin: '1.3em 0 1em 0' }}>
+                  <Typography gutterBottom variant='h4' display='inline'>
                     {new Date(game.released)
                       .toDateString()
                       .split(' ')
@@ -174,7 +204,7 @@ function Game({ game }) {
                   <Typography>About</Typography>
                 </Grid>
                 <Grid item style={{ marginTop: '1em' }}>
-                  <Typography variant='body2' display='inline' gutterBotom>
+                  <Typography variant='body2' display='inline' gutterBottom>
                     Genre:
                   </Typography>
                   {game.genres.map(genre => (
@@ -189,7 +219,7 @@ function Game({ game }) {
                   ))}
                 </Grid>
                 <Grid item>
-                  <Typography variant='body2' display='inline' gutterBotom>
+                  <Typography variant='body2' display='inline' gutterBottom>
                     Platforms:
                   </Typography>
                   {game.platforms.map(platform => (
@@ -204,14 +234,63 @@ function Game({ game }) {
                   ))}
                 </Grid>
                 <Grid item>
-                  <Typography variant='body2' display='inline' gutterBotom>
+                  <Typography variant='body2' display='inline' gutterBottom>
                     Stores:
                   </Typography>
-                  {game.stores.map(store => (<Typography display='inline' size='small' component={Link} href={store.url} target='__blank' >{renderIcons(store)}</Typography> ))}
+                  {game.stores.map(store => (
+                    <IconButton
+                      key={store.id}
+                      edge='end'
+                      size='small'
+                      component={Link}
+                      href={store.url}
+                      target='__blank'
+                    >
+                      {renderIcons(store)}
+                    </IconButton>
+                  ))}
+                </Grid>
+                <Grid item className={classes.content}>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: game.description }}
+                  ></div>
+                </Grid>
+                <Button>Read More</Button>
+              </Grid>
+            </Grid>
+            <Grid item  md={3}>
+              <Grid container  direction='column'>
+                <Grid item style={{ padding: '1.5em 4em'}} >
+                    <Typography gutterBottom align='center'>Metascore</Typography>
+                  <CircularProgressbar
+                    value={game.metacritic}
+                    text={game.metacritic}
+                    styles={buildStyles({
+                      pathTransitionDuration: '1.5',
+                      textColor: theme.palette.green.light,
+                      pathColor: theme.palette.green.light,
+                    })}
+                  />
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item md={4}></Grid>
+          </Grid>
+          <Grid item container direction='row'>
+                    <Grid item md={12}>
+                      
+                      <Slider {...settings} >
+                      {game.clip  &&  <video
+                        src={game.clip.clips.full}
+                        poster={game.clip.preview}
+                        className={classes.gameImage}
+                        onClick={(e) => e.target.play()}
+                      />}
+                     
+                        {images.map(image => (
+                          <img key={image.id} className={classes.gameImage} src={image.image} alt={`image of ${game.name}`}/>
+                        ))}
+                      </Slider>
+                    </Grid>
           </Grid>
         </Grid>
       </div>
@@ -238,7 +317,12 @@ export async function getStaticProps({ params }) {
   });
   const game = await res.data;
 
-  return { props: { game } };
+  const ss = await axios.get(`https://api.rawg.io/api/games/${params.slug}/screenshots`, {
+    headers: { 'User-Agent': 'GamePortal/0.8' },
+  });
+  const images = await ss.data.results;
+
+  return { props: { game, images } };
 }
 
 export default Game;
