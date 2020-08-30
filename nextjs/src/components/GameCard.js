@@ -258,4 +258,4 @@ const GameCard = ({ info, scrollPosition }) => {
   );
 };
 
-export default React.memo(GameCard);
+export default React.memo(trackWindowScroll(GameCard));

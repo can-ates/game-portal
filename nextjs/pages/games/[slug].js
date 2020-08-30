@@ -1,27 +1,21 @@
 import React from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic';
 import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Link from '../../src/Link';
-import Slider from 'react-slick'
+import Slider from 'react-slick';
+import { LazyLoadImage, trackWindowScroll } from 'react-lazy-load-image-component';
 
 import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 
-const Skeleton = dynamic(() => import('@material-ui/lab/Skeleton'));
-
-import { FaLinux, FaPause } from 'react-icons/fa';
+import { FaLinux } from 'react-icons/fa';
 import { FaXbox } from 'react-icons/fa';
 import { FaPlaystation } from 'react-icons/fa';
 import { FaSteam } from 'react-icons/fa/';
@@ -33,6 +27,7 @@ import { SiNintendo3Ds } from 'react-icons/si';
 import { SiGroupon } from 'react-icons/si';
 import { SiEpicgames } from 'react-icons/si';
 import { SiItchDotIo } from 'react-icons/si';
+import { FaPlay } from 'react-icons/fa';
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -82,22 +77,74 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  gameImage:{
+  videoWrapper: {
+    position: 'relative',
+    '&:focus': {
+      outline: 'none',
+    },
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
+  gameImage: {
     padding: '0.5em 1em',
-    objectFit: 'contain',
     borderRadius: '20px',
     transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
-    '&:hover' :{
-      transform: 'scale(1.1)'
-    }
-  }
+
+    '&:hover': {
+      transform: 'scale(1.05)',
+      cursor: 'pointer',
+    },
+    height: '13em',
+  },
+  playButton: {
+    position: 'absolute',
+    bottom: '2%',
+    right: '2%',
+    fontSize: '3em',
+    opacity: '0.7',
+    backgroundColor: theme.palette.green.light,
+    borderRadius: '50%',
+    padding: '0.2em',
+  },
 }));
 
-function Game({ game, images }) {
+function SampleNextArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: 'block',
+        transform: 'translateX(-25px) scale(2.5)',
+        zIndex: '10',
+      }}
+      onClick={onClick}
+    />
+  );
+}
+
+function SamplePrevArrow(props) {
+  const { className, style, onClick } = props;
+  return (
+    <div
+      className={className}
+      style={{
+        ...style,
+        display: 'block',
+        transform: 'translateX(25px) scale(2.5)',
+        zIndex: '10',
+      }}
+      onClick={onClick}
+    />
+  );
+}
+
+function Game({ game, images, videos, scrollPosition }) {
   const classes = useStyles();
   const router = useRouter();
   const theme = useTheme();
-
 
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -108,10 +155,11 @@ function Game({ game, images }) {
     speed: 500,
     lazyLoad: true,
     slidesToShow: 3,
-    slidesToScroll: 1,
+    slidesToScroll: 3,
     cssEase: 'linear',
-    
-  }
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  };
 
   const renderIcons = info => {
     switch (info.store.name) {
@@ -172,7 +220,7 @@ function Game({ game, images }) {
       </div>
       <div className={classes.wrapper}>
         <Grid container direction='column'>
-          <Grid item container direction='row' style={{border: '1px solid red'}}>
+          <Grid item container direction='row'>
             <Grid item md={3}></Grid>
             <Grid item md={6}>
               <Grid container direction='column'>
@@ -258,10 +306,12 @@ function Game({ game, images }) {
                 <Button>Read More</Button>
               </Grid>
             </Grid>
-            <Grid item  md={3}>
-              <Grid container  direction='column'>
-                <Grid item style={{ padding: '1.5em 4em'}} >
-                    <Typography gutterBottom align='center'>Metascore</Typography>
+            <Grid item md={3}>
+              <Grid container direction='column'>
+                <Grid item style={{ padding: '1.5em 4em' }}>
+                  <Typography gutterBottom align='center'>
+                    Metascore
+                  </Typography>
                   <CircularProgressbar
                     value={game.metacritic}
                     text={game.metacritic}
@@ -276,21 +326,50 @@ function Game({ game, images }) {
             </Grid>
           </Grid>
           <Grid item container direction='row'>
-                    <Grid item md={12}>
-                      
-                      <Slider {...settings} >
-                      {game.clip  &&  <video
-                        src={game.clip.clips.full}
-                        poster={game.clip.preview}
-                        className={classes.gameImage}
-                        onClick={(e) => e.target.play()}
-                      />}
-                     
-                        {images.map(image => (
-                          <img key={image.id} className={classes.gameImage} src={image.image} alt={`image of ${game.name}`}/>
-                        ))}
-                      </Slider>
-                    </Grid>
+            <Grid item md={12}>
+              <Slider {...settings}>
+                {game.clip && (
+                  <div className={classes.videoWrapper}>
+                    <video
+                      src={game.clip.clips.full}
+                      poster={game.clip.preview}
+                      className={classes.gameImage}
+                      onClick={e =>
+                        e.target.paused ? e.target.play() : e.target.pause()
+                      }
+                      onBlur={e => e.target.pause()}
+                    />
+                    <FaPlay className={classes.playButton} />
+                  </div>
+                )}
+
+                {videos.map(video => (
+                  <div className={classes.videoWrapper}>
+                    <video
+                      src={video.data['480']}
+                      poster={video.preview}
+                      className={classes.gameImage}
+                      onClick={e =>
+                        e.target.paused ? e.target.play() : e.target.pause()
+                      }
+                      onBlur={e => e.target.pause()}
+                    />
+                    <FaPlay className={classes.playButton} />
+                  </div>
+                ))}
+
+                {images.map(image => (
+                  <LazyLoadImage
+                    effect='blur'
+                    scrollPosition={scrollPosition}
+                    key={image.id}
+                    className={classes.gameImage}
+                    src={image.image}
+                    alt={`image of ${game.name}`}
+                  />
+                ))}
+              </Slider>
+            </Grid>
           </Grid>
         </Grid>
       </div>
@@ -317,12 +396,23 @@ export async function getStaticProps({ params }) {
   });
   const game = await res.data;
 
-  const ss = await axios.get(`https://api.rawg.io/api/games/${params.slug}/screenshots`, {
-    headers: { 'User-Agent': 'GamePortal/0.8' },
-  });
+  const ss = await axios.get(
+    `https://api.rawg.io/api/games/${params.slug}/screenshots`,
+    {
+      headers: { 'User-Agent': 'GamePortal/0.8' },
+    }
+  );
   const images = await ss.data.results;
 
-  return { props: { game, images } };
+  const mvs = await axios.get(
+    `https://api.rawg.io/api/games/${params.slug}/movies`,
+    {
+      headers: { 'User-Agent': 'GamePortal/0.8' },
+    }
+  );
+  const videos = await mvs.data.results;
+
+  return { props: { game, images, videos } };
 }
 
-export default Game;
+export default trackWindowScroll(Game);

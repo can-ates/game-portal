@@ -136,12 +136,12 @@ function Index(props) {
               <Grid item>
                 <SortBar
                   type='genres'
-                  size='13'
+                  size='17'
                   handleSorting={handleSorting}
                 />
               </Grid>
               <Grid item>
-                <SortBar type='tags' size='8' handleSorting={handleSorting} />
+                <SortBar type='tags' size='11' handleSorting={handleSorting} />
               </Grid>
               <Grid item>
                 <SortBar
@@ -151,7 +151,7 @@ function Index(props) {
                 />
               </Grid>
               <Grid item>
-                <SortBar type='stores' size='8' handleSorting={handleSorting} />
+                <SortBar type='stores' size='11' handleSorting={handleSorting} />
               </Grid>
             </div>
           </Grid>

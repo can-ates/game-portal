@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import useSWR from 'swr';
 import axios from 'axios';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -46,6 +47,11 @@ const useStyles = makeStyles(theme => ({
     margin: 'auto',
     fontSize: '1.5rem',
   },
+  avatar : {
+    height : '2em',
+    width: '3em',
+    borderRadius: '10px'
+  }
 }));
 
 const fetcher = url => axios.get(url).then(res => res.data.results);
@@ -125,7 +131,12 @@ const SortBar = props => {
       case 'itch.io':
         return <SiItchDotIo key={info.name} className={classes.icon} />;
       default:
-        return <Avatar key={info.name} src={info.image_background} />;
+        return <LazyLoadImage
+        className={classes.avatar}
+        src={info.image_background}
+        effect='opacity'
+        placeholderSrc={info.clip ? info.clip.preview : null}
+      />
     }
   };
 
@@ -154,12 +165,12 @@ const SortBar = props => {
         {data.slice(0, 3).map(data => {
           return (
             <ListItem button key={data.id} data-key={data.id} disableGutters>
-              <ListItemIcon>{renderIcons(data)}</ListItemIcon>
+            <ListItemIcon>{renderIcons(data)}</ListItemIcon>{/* */}
               <ListItemText onClick={handleSort} primary={data.name} />
             </ListItem>
           );
         })}
-        <Collapse in={open} timeout='auto' unmountOnExit>
+        <Collapse in={open} timeout={1} unmountOnExit>
           <List component='div'>
             {data.slice(3, data.length).map(data => {
               return (
