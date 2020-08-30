@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -106,6 +107,18 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '5px',
     zIndex: '11',
   },
+  listItem: {
+    '&:hover':{
+      cursor: 'pointer',
+      backgroundColor: theme.palette.green.dark
+    }
+  },
+  resultImage: {
+    height: 30,
+    width: 40,
+    objectFit: 'cover',
+    borderRadius: '50%'
+  }
 }));
 
 function Header() {
@@ -236,11 +249,14 @@ function Header() {
             <List>
               {results.map(result => {
                 return (
-                  <ListItem divider={true}>
+                  <ListItem divider={true} component={Link} href={`/games/${[result.slug]}`} className={classes.listItem} >
                     <ListItemAvatar>
-                      <Avatar
+                      <LazyLoadImage
                         alt={`Avatar of ${result.name}`}
                         src={result.background_image}
+                        className={classes.resultImage}
+                        effect='opacity'
+                        placeholderSrc={result.background_image}
                       />
                     </ListItemAvatar>
                     <ListItemText

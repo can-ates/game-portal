@@ -64,6 +64,11 @@ const theme = createMuiTheme({
       fontWeight: '800',
       color: '#4AD87F',
     },
+    subtitle2 : {
+      fontWeight: '900',
+      color: '#4AD87F',
+      fontSize: "0.9rem"
+    },
     caption :{
       fontWeight: '900',
       color: '#779276',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
@@ -8,7 +8,10 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Link from '../../src/Link';
 import Slider from 'react-slick';
-import { LazyLoadImage, trackWindowScroll } from 'react-lazy-load-image-component';
+import {
+  LazyLoadImage,
+  trackWindowScroll,
+} from 'react-lazy-load-image-component';
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -28,6 +31,9 @@ import { SiGroupon } from 'react-icons/si';
 import { SiEpicgames } from 'react-icons/si';
 import { SiItchDotIo } from 'react-icons/si';
 import { FaPlay } from 'react-icons/fa';
+import { TiWorld } from 'react-icons/ti';
+import { FaReddit } from 'react-icons/fa';
+import { AiFillMediumCircle } from 'react-icons/ai';
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -54,15 +60,14 @@ const useStyles = makeStyles(theme => ({
   },
   wrapper: {
     padding: '7em 10em',
-    border: '1px solid red',
   },
   about: {
     marginLeft: '1em',
+    color: theme.palette.green.light,
   },
   icon: {
     marginLeft: '1em',
     fontSize: '1.3rem',
-    color: theme.palette.green.light,
     '&:hover': {
       cursor: 'pointer',
       color: 'white',
@@ -77,6 +82,12 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
+  tags: {
+    backgroundColor: 'rgba(119, 146, 118, 0.3)',
+    opacity: '0.7',
+    marginRight: '1em',
+    display: 'inline-block',
+  },
   videoWrapper: {
     position: 'relative',
     '&:focus': {
@@ -85,6 +96,14 @@ const useStyles = makeStyles(theme => ({
     '&:hover': {
       cursor: 'pointer',
     },
+    borderRadius: '20px',
+    transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
+
+    '&:hover': {
+      transform: 'scale(1.05)',
+      cursor: 'pointer',
+    },
+    width: '100%',
   },
   gameImage: {
     padding: '0.5em 1em',
@@ -92,7 +111,7 @@ const useStyles = makeStyles(theme => ({
     transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
 
     '&:hover': {
-      transform: 'scale(1.05)',
+      transform: 'scale(1.1)',
       cursor: 'pointer',
     },
     height: '13em',
@@ -107,6 +126,16 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '50%',
     padding: '0.2em',
   },
+  cardImage: {
+    objectFit: 'cover',
+    width: '100%',
+    height: '20em',
+    borderRadius: '10px',
+  },
+  urls: {
+    display: 'inline-block',
+    marginRight: '1em',
+  },
 }));
 
 function SampleNextArrow(props) {
@@ -117,7 +146,7 @@ function SampleNextArrow(props) {
       style={{
         ...style,
         display: 'block',
-        transform: 'translateX(-25px) scale(2.5)',
+        transform: 'translateX(-10px) scale(2.5)',
         zIndex: '10',
       }}
       onClick={onClick}
@@ -133,7 +162,7 @@ function SamplePrevArrow(props) {
       style={{
         ...style,
         display: 'block',
-        transform: 'translateX(25px) scale(2.5)',
+        transform: 'translateX(15px) scale(2.5)',
         zIndex: '10',
       }}
       onClick={onClick}
@@ -142,6 +171,7 @@ function SamplePrevArrow(props) {
 }
 
 function Game({ game, images, videos, scrollPosition }) {
+  const description = useRef();
   const classes = useStyles();
   const router = useRouter();
   const theme = useTheme();
@@ -152,7 +182,7 @@ function Game({ game, images, videos, scrollPosition }) {
 
   const settings = {
     infinite: true,
-    speed: 500,
+    speed: 300,
     lazyLoad: true,
     slidesToShow: 3,
     slidesToScroll: 3,
@@ -171,19 +201,28 @@ function Game({ game, images, videos, scrollPosition }) {
       case 'PlayStation 2':
       case 'PS Vita':
       case 'PSP':
-        return <FaPlaystation className={classes.icon} />;
+        return (
+          <FaPlaystation
+            style={{ color: '#003087' }}
+            className={classes.icon}
+          />
+        );
       case 'Xbox':
       case 'Xbox Store':
       case 'Xbox One':
       case 'Xbox Series X':
       case 'Xbox 360':
-        return <FaXbox className={classes.icon} />;
+        return <FaXbox style={{ color: '#107C10' }} className={classes.icon} />;
       case 'Epic Games':
         return <SiEpicgames className={classes.icon} />;
       case 'PC':
-        return <FaWindows className={classes.icon} />;
+        return (
+          <FaWindows style={{ color: '#00adef' }} className={classes.icon} />
+        );
       case 'Steam':
-        return <FaSteam className={classes.icon} />;
+        return (
+          <FaSteam style={{ color: '#171a21' }} className={classes.icon} />
+        );
       case 'GOG':
         return <SiGroupon className={classes.icon} />;
       case 'Nintendo Switch':
@@ -197,14 +236,22 @@ function Game({ game, images, videos, scrollPosition }) {
       case 'iOS':
       case 'macOS':
       case 'App Store':
-        return <FaApple className={classes.icon} />;
+        return (
+          <FaApple style={{ color: '#555555' }} className={classes.icon} />
+        );
       case 'Android':
       case 'Google Play':
-        return <SiAndroid className={classes.icon} />;
+        return (
+          <SiAndroid style={{ color: '#78C257' }} className={classes.icon} />
+        );
       case 'Linux':
-        return <FaLinux className={classes.icon} />;
+        return (
+          <FaLinux style={{ color: '#333333' }} className={classes.icon} />
+        );
       case 'itch.io':
-        return <SiItchDotIo className={classes.icon} />;
+        return (
+          <SiItchDotIo style={{ color: '#fa5c5c' }} className={classes.icon} />
+        );
       default:
         return;
     }
@@ -220,13 +267,77 @@ function Game({ game, images, videos, scrollPosition }) {
       </div>
       <div className={classes.wrapper}>
         <Grid container direction='column'>
-          <Grid item container direction='row'>
-            <Grid item md={3}></Grid>
+          <Grid item container direction='row' spacing={5}>
+            {/* LEFT COLUMN */}
+            <Grid item md={3} align='center'>
+              <Grid container direction='column'>
+                <Grid item>
+                  <LazyLoadImage
+                    src={game.background_image}
+                    effect='blur'
+                    className={classes.cardImage}
+                  />
+                </Grid>
+                {/* WEBSITE-REDDIT-METACRITIC */}
+
+                <Grid item style={{ marginTop: '1rem' }}>
+                  {game.website && (
+                    <Typography
+                      component={Link}
+                      href={game.website}
+                      target='__blank'
+                      className={classes.urls}
+                    >
+                      Website:{' '}
+                      <TiWorld
+                        fontSize='1.75rem'
+                        style={{ verticalAlign: 'middle' }}
+                      />
+                    </Typography>
+                  )}
+                  {game.reddit_url && (
+                    <Typography
+                      component={Link}
+                      href={game.reddit_url}
+                      className={classes.urls}
+                      target='__blank'
+                    >
+                      Reddit:{' '}
+                      <FaReddit
+                        style={{ color: '#ff5700', verticalAlign: 'middle' }}
+                        fontSize='1.5rem'
+                      />
+                    </Typography>
+                  )}
+
+                  {game.metacritic_url && (
+                    <Typography
+                      component={Link}
+                      href={game.metacritic_url}
+                      target='__blank'
+                    >
+                      Metacritic:{' '}
+                      <AiFillMediumCircle
+                        fontSize='1.75rem'
+                        style={{
+                          verticalAlign: 'middle',
+                          transform: 'rotate(-45deg)',
+                          color: '#FFCC34',
+                        }}
+                      />
+                    </Typography>
+                  )}
+                </Grid>
+              </Grid>
+            </Grid>
+            {/* CENTER COLUMN */}
             <Grid item md={6}>
               <Grid container direction='column'>
+                {/* TITLE */}
                 <Grid item>
                   <Typography variant='h1'>{game.name}</Typography>
                 </Grid>
+                {/* DATE */}
                 <Grid item style={{ margin: '1.3em 0 1em 0' }}>
                   <Typography gutterBottom variant='h4' display='inline'>
                     {new Date(game.released)
@@ -237,6 +348,7 @@ function Game({ game, images, videos, scrollPosition }) {
                     ({dayjs(new Date(game.released).toDateString()).fromNow()})
                   </Typography>
                 </Grid>
+                {/* PUBLISHERS */}
                 <Grid item>
                   {game.publishers.map(publisher => (
                     <Typography
@@ -251,6 +363,7 @@ function Game({ game, images, videos, scrollPosition }) {
                 <Grid item style={{ marginTop: '5em' }}>
                   <Typography>About</Typography>
                 </Grid>
+                {/* GENRE */}
                 <Grid item style={{ marginTop: '1em' }}>
                   <Typography variant='body2' display='inline' gutterBottom>
                     Genre:
@@ -266,6 +379,7 @@ function Game({ game, images, videos, scrollPosition }) {
                     </Typography>
                   ))}
                 </Grid>
+                {/* PLATFORMS */}
                 <Grid item>
                   <Typography variant='body2' display='inline' gutterBottom>
                     Platforms:
@@ -281,6 +395,7 @@ function Game({ game, images, videos, scrollPosition }) {
                     </Typography>
                   ))}
                 </Grid>
+                {/* STORES */}
                 <Grid item>
                   <Typography variant='body2' display='inline' gutterBottom>
                     Stores:
@@ -298,34 +413,60 @@ function Game({ game, images, videos, scrollPosition }) {
                     </IconButton>
                   ))}
                 </Grid>
-                <Grid item className={classes.content}>
+                {/* DESCRIPTION*/}
+                <Grid item ref={description} className={classes.content}>
                   <div
                     dangerouslySetInnerHTML={{ __html: game.description }}
                   ></div>
                 </Grid>
-                <Button>Read More</Button>
+                <Button
+                  style={{ color: theme.palette.green.light }}
+                  onClick={() =>
+                    description.current.style.display === 'block'
+                      ? (description.current.style.display = '-webkit-box')
+                      : (description.current.style.display = 'block')
+                  }
+                >
+                  Read more
+                </Button>
               </Grid>
             </Grid>
+            {/* RIGHT COLUMN */}
             <Grid item md={3}>
               <Grid container direction='column'>
-                <Grid item style={{ padding: '1.5em 4em' }}>
+                {/* METASCORE */}
+                <Grid item style={{ marginBottom: '4em' }}>
                   <Typography gutterBottom align='center'>
                     Metascore
                   </Typography>
-                  <CircularProgressbar
-                    value={game.metacritic}
-                    text={game.metacritic}
-                    styles={buildStyles({
-                      pathTransitionDuration: '1.5',
-                      textColor: theme.palette.green.light,
-                      pathColor: theme.palette.green.light,
-                    })}
-                  />
+                  <div style={{ width: '15em', margin: '0 auto' }}>
+                    <CircularProgressbar
+                      value={game.metacritic}
+                      text={game.metacritic}
+                      styles={buildStyles({
+                        pathTransitionDuration: '1.5',
+                        textColor: theme.palette.green.light,
+                        pathColor: theme.palette.green.light,
+                      })}
+                    />
+                  </div>
+                </Grid>
+                {/* TAGS */}
+                <Grid item align='center'>
+                  {game.tags.map(tag => (
+                    <Typography
+                      gutterBottom
+                      className={classes.tags}
+                      variant='subtitle2'
+                    >
+                      {tag.name}
+                    </Typography>
+                  ))}
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-          <Grid item container direction='row'>
+          <Grid item container direction='row' style={{ marginTop: '2em' }}>
             <Grid item md={12}>
               <Slider {...settings}>
                 {game.clip && (
@@ -337,7 +478,6 @@ function Game({ game, images, videos, scrollPosition }) {
                       onClick={e =>
                         e.target.paused ? e.target.play() : e.target.pause()
                       }
-                      onBlur={e => e.target.pause()}
                     />
                     <FaPlay className={classes.playButton} />
                   </div>
@@ -352,7 +492,6 @@ function Game({ game, images, videos, scrollPosition }) {
                       onClick={e =>
                         e.target.paused ? e.target.play() : e.target.pause()
                       }
-                      onBlur={e => e.target.pause()}
                     />
                     <FaPlay className={classes.playButton} />
                   </div>
@@ -366,6 +505,7 @@ function Game({ game, images, videos, scrollPosition }) {
                     className={classes.gameImage}
                     src={image.image}
                     alt={`image of ${game.name}`}
+                    placeholderSrc={image.image}
                   />
                 ))}
               </Slider>

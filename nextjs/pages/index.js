@@ -141,7 +141,7 @@ function Index(props) {
                 />
               </Grid>
               <Grid item>
-                <SortBar type='tags' size='11' handleSorting={handleSorting} />
+                <SortBar type='tags' size='20' handleSorting={handleSorting} />
               </Grid>
               <Grid item>
                 <SortBar

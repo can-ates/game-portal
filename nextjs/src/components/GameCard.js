@@ -191,7 +191,7 @@ const GameCard = ({ info, scrollPosition }) => {
                 src={info.background_image}
                 effect='blur'
                 scrollPosition={scrollPosition}
-                placeholderSrc={info.clip ? info.clip.preview : null}
+                placeholderSrc={info.background_image}
               />
 
               {info.clip && <FaPlay className={classes.playButton} />}
