@@ -455,6 +455,7 @@ function Game({ game, images, videos, scrollPosition }) {
                 <Grid item align='center'>
                   {game.tags.map(tag => (
                     <Typography
+                      key={tag.id}
                       gutterBottom
                       className={classes.tags}
                       variant='subtitle2'

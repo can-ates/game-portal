@@ -10,6 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { FaLinux } from 'react-icons/fa';
 import { FaPlaystation } from 'react-icons/fa';
@@ -153,13 +154,13 @@ const GameCard = ({ info, scrollPosition }) => {
     <React.Fragment>
       <div
         style={{ position: 'relative', height: '100%' }}
-        onMouseOver={() => setShowVideo(true)}
+        onMouseOver={() => !showVideo && setShowVideo(true)}
       >
         <Card
           ref={media}
           className={classes.card}
           elevation={0}
-          onMouseLeave={() => setShowVideo(false)}
+          onMouseLeave={() => showVideo && setShowVideo(false)}
         >
           {showVideo && info.clip ? (
             <div>
@@ -167,12 +168,13 @@ const GameCard = ({ info, scrollPosition }) => {
                 muted={true}
                 autoPlay={true}
                 loop={true}
-                poster={info.clip ? info.clip.preview : undefined}
+                poster={<CircularProgress style={{zIndex: '999'}} />}
                 elevation={0}
                 component='video'
                 className={classes.cardVideo}
                 src={info.clip.clips['640']}
               />
+              
               <Button
                 size='large'
                 variant='outlined'
