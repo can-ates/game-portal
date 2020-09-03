@@ -7,6 +7,7 @@ const {body,check} = require('express-validator')
 
 const {
   signup,
+  login
 } = require('./handlers/users');
 
 
@@ -20,7 +21,10 @@ app.post('/signup', [
   body('handle').exists().withMessage('You should provide a handle')
 
 ], signup);
-// app.post('/login', login);
+app.post('/login',[
+  body('email').exists().withMessage('Email required').bail().isEmail().withMessage('Not a valid email').normalizeEmail(),
+  body('password').exists().withMessage('Password required'),
+] ,login);
 // app.post('/user/image', FBAuth, uploadImage);
 // app.post('/user', FBAuth, addUserDetails);
 // app.get('/user', FBAuth, getAuthenticatedUser);
