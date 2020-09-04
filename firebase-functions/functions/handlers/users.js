@@ -3,6 +3,7 @@ const { admin, db } = require('../util/admin');
 const config = require('../util/config');
 const { validationResult } = require('express-validator');
 
+
 const firebase = require('firebase');
 firebase.initializeApp(config);
 
@@ -34,12 +35,12 @@ exports.signup = (req, res) => {
           .auth()
           .createUserWithEmailAndPassword(signUpUser.email, signUpUser.password)
           .then(userData => {
-            console.log('1');
+            
             userId = userData.user.uid;
             return userData.user.getIdToken();
           })
           .then(idToken => {
-            console.log('2');
+            
             token = idToken;
             const credentials = {
               userId,
@@ -57,7 +58,7 @@ exports.signup = (req, res) => {
       }
     })
     .catch(err => {
-      console.error(err);
+      
       if (err.code === 'auth/email-already-in-use') {
         return res.status(400).json({ email: 'Email is already in use' });
       } else {
@@ -104,3 +105,14 @@ exports.login = (req, res) => {
       }
     });
 };
+
+exports.uploadImage = (req, res) => {
+    const Busboy = require('busboy')
+
+    const busboy = new Busboy({headers: req.headers})
+  
+    busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
+    })
+
+    busboy.end(req.rawBody)
+}
