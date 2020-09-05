@@ -6,17 +6,15 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../src/theme';
 import Header from '../src/components/ui/Header';
-import whyDidYouRender from '@welldone-software/why-did-you-render';
+import { Provider } from 'react-redux';
+import { useStore } from '../store';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'react-circular-progressbar/dist/styles.css';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-  whyDidYouRender(React);
-}
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 export default function MyApp(props) {
+  const store = useStore(props.pageProps.initialReduxState)
   const { Component, pageProps } = props;
 
   React.useEffect(() => {
@@ -37,11 +35,13 @@ export default function MyApp(props) {
         />
       </Head>
       <ThemeProvider theme={theme}>
-        <Container maxWidth='xl'>
-          <Header />
-          <CssBaseline />
-          <Component {...pageProps} anan='ananin amini sikeyim' />
-        </Container>
+        <Provider store={store}>
+          <Container maxWidth='xl'>
+            <Header />
+            <CssBaseline />
+            <Component {...pageProps} anan='ananin amini sikeyim' />
+          </Container>
+        </Provider>
       </ThemeProvider>
     </React.Fragment>
   );
