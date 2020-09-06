@@ -24,10 +24,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const fetcher = url =>
-  axios
-    .get(url)
-    .then(res => res.data.results);
+const fetcher = url => axios.get(url).then(res => res.data.results);
 
 function Index(props) {
   const observer = useRef();
@@ -151,7 +148,11 @@ function Index(props) {
                 />
               </Grid>
               <Grid item>
-                <SortBar type='stores' size='11' handleSorting={handleSorting} />
+                <SortBar
+                  type='stores'
+                  size='11'
+                  handleSorting={handleSorting}
+                />
               </Grid>
             </div>
           </Grid>
@@ -202,6 +203,7 @@ function Index(props) {
           </Grid>
         </Grid>
       </Grid>
+      
     </div>
   );
 }

@@ -39,10 +39,12 @@ export default function MyApp(props) {
           <Container maxWidth='xl'>
             <Header />
             <CssBaseline />
-            <Component {...pageProps} anan='ananin amini sikeyim' />
+            <Component {...pageProps} />
+            
           </Container>
         </Provider>
       </ThemeProvider>
+      
     </React.Fragment>
   );
 }
