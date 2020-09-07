@@ -10,7 +10,8 @@ const {body,check} = require('express-validator')
 const {
   signup,
   login,
-  uploadImage
+  uploadImage,
+  getAuthenticatedUser
 } = require('./handlers/users');
 
 
@@ -30,7 +31,7 @@ app.post('/login',[
 ] ,login);
 app.post('/user/image' ,auth,uploadImage);
 // app.post('/user', FBAuth, addUserDetails);
-// app.get('/user', FBAuth, getAuthenticatedUser);
+app.get('/user', auth, getAuthenticatedUser);
 // app.get('/user/:handle', getUserDetails);
 // app.post('/notifications', FBAuth, markNotificationsRead);
 

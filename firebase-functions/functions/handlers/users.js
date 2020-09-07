@@ -103,6 +103,23 @@ exports.login = (req, res) => {
     });
 };
 
+exports.getAuthenticatedUser = (req, res) => {
+  let credentials = {}
+
+  db
+  .doc(`/users/${req.user.handle}`)
+  .get()
+  .then(doc => {
+    if(doc.exists){
+      credentials = doc.data()
+      return res.json(credentials)
+    }
+    
+  }).catch(err => {
+    res.status(500).json({error: err.code})
+  })
+}
+
 exports.uploadImage = (req, res) => {
   const Busboy = require('busboy');
   const path = require('path');
