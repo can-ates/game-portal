@@ -7,14 +7,34 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import theme from '../src/theme';
 import Header from '../src/components/ui/Header';
 import { Provider } from 'react-redux';
-import { useStore } from '../store';
+import jwtDecode from 'jwt-decode';
+import { useStore, initializeStore } from '../store';
+import {instance} from '../src/utils/axios';
+import { logoutUser, getAuthenticatedUser } from '../actions/userActions';
+import * as types from '../actions/types';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'react-circular-progressbar/dist/styles.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
+
+if (typeof window !== 'undefined') {
+  const token = localStorage.idToken;
+  if (token) {
+    const decodedToken = jwtDecode(token);
+    if (decodedToken.exp * 1000 < Date.now()) {
+      initializeStore().dispatch(logoutUser());
+      // window.location.href = '/login';
+    } else {
+      initializeStore().dispatch({ type: types.SET_AUTHENTICATED });
+      instance.defaults.headers.common['Authorization'] = token;
+      initializeStore().dispatch(getAuthenticatedUser());
+    }
+  }
+}
+
 export default function MyApp(props) {
-  const store = useStore(props.pageProps.initialReduxState)
+  const store = useStore(props.pageProps.initialReduxState);
   const { Component, pageProps } = props;
 
   React.useEffect(() => {
@@ -40,11 +60,9 @@ export default function MyApp(props) {
             <Header />
             <CssBaseline />
             <Component {...pageProps} />
-            
           </Container>
         </Provider>
       </ThemeProvider>
-      
     </React.Fragment>
   );
 }

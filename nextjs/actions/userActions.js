@@ -1,6 +1,6 @@
 import * as types from './types'
 
-import { instance } from '../src/utils/axios';
+import  {instance}  from '../src/utils/axios';
 
 
 export const signUpUser = (userData, router) => (dispatch) => {
@@ -12,7 +12,19 @@ export const signUpUser = (userData, router) => (dispatch) => {
     dispatch(getAuthenticatedUser())
     router.push('/')
   })
+  .catch(err => {
+    console.log(err)
+  })
 }
+
+
+export const logoutUser = () => (dispatch) => {
+  localStorage.removeItem('idToken');
+  delete instance.defaults.headers.common['Authorization'];
+  dispatch({ type: types.SET_UNAUTHENTICATED });
+};
+
+
 
 export const getAuthenticatedUser = () => (dispatch) => {
   console.log('anan')

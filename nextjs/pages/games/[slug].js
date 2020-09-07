@@ -484,8 +484,8 @@ function Game({ game, images, videos, scrollPosition }) {
                   </div>
                 )}
 
-                {videos.map(video => (
-                  <div className={classes.videoWrapper}>
+                {videos.map((video, i) => (
+                  <div key={i} className={classes.videoWrapper}>
                     <video
                       src={video.data['480']}
                       poster={video.preview}

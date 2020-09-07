@@ -10,6 +10,7 @@
     "clsx": "latest",
     "dayjs": "^1.8.34",
     "formik": "^2.1.5",
+    "jwt-decode": "^2.2.0",
     "next": "latest",
     "prop-types": "latest",
     "react": "latest",

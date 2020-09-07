@@ -165,8 +165,8 @@ function Index(props) {
             justify='space-between'
           >
             {loading
-              ? Array.from({ length: 20 }).map(() => (
-                  <Grid item xl={2} lg={3} md={4} sm={6}>
+              ? Array.from({ length: 20 }).map((_, i) => (
+                  <Grid key={i} item xl={2} lg={3} md={4} sm={6}>
                     <Skeleton
                       animation='wave'
                       variant='rect'
