@@ -1,8 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from '../src/Link';
+import { useRouter } from 'next/router'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -16,7 +17,8 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import TextField from '@material-ui/core/TextField';
 
-import { instance } from '../src/utils/axios';
+
+import {signUpUser} from '../actions/userActions'
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -88,11 +90,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Signup = () => {
+const Signup = (props) => {
   const theme = useTheme();
   const classes = useStyles();
   const [visibility, setVisibility] = useState(false);
-  const ex = useSelector(state => state.count);
+  const router = useRouter()
+  const dispatch = useDispatch()
 
   const CustomInputComponent = props => (
     <TextField
@@ -151,9 +154,11 @@ const Signup = () => {
                     .required('Password confirm is required'),
                 })}
                 onSubmit={(values, { setSubmitting }) => {
-                  instance.post('/signup', values ).then(res => {
-                    console.log(res.data)
-                  })
+                  console.log(values, router)
+
+                  dispatch(signUpUser(values, router))
+                  setSubmitting(false)
+                  
                 }}
               >
                 {({ isSubmitting, isValid, dirty }) => (

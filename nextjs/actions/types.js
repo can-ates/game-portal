@@ -1,4 +1,4 @@
-export const TICK = 'TICK'
-export const INCREMENT = 'INCREMENT'
-export const DECREMENT = 'DECREMENT'
-export const RESET = 'RESET'
+export const SET_USER = 'SET_USER'
+export const LOADING_USER = 'LOADING_USER'
+export const SET_UNAUTHENTICATED = 'SET_UNAUTHENTICATED'
+export const SET_AUTHENTICATED = 'SET_AUTHENTICATED'
