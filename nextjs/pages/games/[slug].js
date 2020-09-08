@@ -6,6 +6,7 @@ const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
 import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Link from '../../src/Link';
 import Slider from 'react-slick';
 import {
@@ -59,7 +60,10 @@ const useStyles = makeStyles(theme => ({
     backgroundImage: 'linear-gradient(180deg, transparent, #2D3142);',
   },
   wrapper: {
-    padding: '7em 10em',
+    padding: '8em 10em',
+    [theme.breakpoints.down('sm')]: {
+      padding: '1em 3em',
+    },
   },
   about: {
     marginLeft: '1em',
@@ -100,21 +104,23 @@ const useStyles = makeStyles(theme => ({
     transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
 
     '&:hover': {
-      transform: 'scale(1.05)',
       cursor: 'pointer',
     },
-    width: '100%',
+    height: 'auto',
+    width: 'auto',
   },
   gameImage: {
     padding: '0.5em 1em',
     borderRadius: '20px',
+    objectFit: 'fill',
     transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
 
     '&:hover': {
       transform: 'scale(1.1)',
       cursor: 'pointer',
     },
-    height: '13em',
+    height: '14em',
+    width: '100%',
   },
   playButton: {
     position: 'absolute',
@@ -135,6 +141,9 @@ const useStyles = makeStyles(theme => ({
   urls: {
     display: 'inline-block',
     marginRight: '1em',
+  },
+  slider: {
+   padding: '1em'
   },
 }));
 
@@ -175,6 +184,7 @@ function Game({ game, images, videos, scrollPosition }) {
   const classes = useStyles();
   const router = useRouter();
   const theme = useTheme();
+  const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
 
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -184,11 +194,35 @@ function Game({ game, images, videos, scrollPosition }) {
     infinite: true,
     speed: 300,
     lazyLoad: true,
-    slidesToShow: 3,
-    slidesToScroll: 3,
+    slidesToShow: 4,
+    swipeToSlide: true,
+    slidesToScroll: 4,
     cssEase: 'linear',
     nextArrow: <SampleNextArrow />,
     prevArrow: <SamplePrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1300,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 3,
+        },
+      },
+      {
+        breakpoint: 1144,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+        },
+      },
+      {
+        breakpoint: 650,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   const renderIcons = info => {
@@ -267,9 +301,9 @@ function Game({ game, images, videos, scrollPosition }) {
       </div>
       <div className={classes.wrapper}>
         <Grid container direction='column'>
-          <Grid item container direction='row' spacing={5}>
+          <Grid item container direction='row' spacing={4}>
             {/* LEFT COLUMN */}
-            <Grid item md={3} align='center'>
+            <Grid item md={3}>
               <Grid container direction='column'>
                 <Grid item>
                   <LazyLoadImage
@@ -280,7 +314,11 @@ function Game({ game, images, videos, scrollPosition }) {
                 </Grid>
                 {/* WEBSITE-REDDIT-METACRITIC */}
 
-                <Grid item style={{ marginTop: '1rem' }}>
+                <Grid
+                  align={matchesSM ? 'center' : null}
+                  item
+                  style={{ marginTop: '1rem' }}
+                >
                   {game.website && (
                     <Typography
                       component={Link}
@@ -432,14 +470,24 @@ function Game({ game, images, videos, scrollPosition }) {
               </Grid>
             </Grid>
             {/* RIGHT COLUMN */}
-            <Grid item md={3}>
+            <Grid
+              item
+              md={3}
+              style={{ padding: matchesSM ? '0' : '1em 1em 0 1em' }}
+            >
               <Grid container direction='column'>
                 {/* METASCORE */}
                 <Grid item style={{ marginBottom: '4em' }}>
                   <Typography gutterBottom align='center'>
                     Metascore
                   </Typography>
-                  <div style={{ width: '15em', margin: '0 auto' }}>
+                  <div
+                    style={{
+                      minWidth: '9em',
+                      width: matchesSM ? '13em' : 'auto',
+                      margin: '0 auto',
+                    }}
+                  >
                     <CircularProgressbar
                       value={game.metacritic}
                       text={game.metacritic}
@@ -467,53 +515,52 @@ function Game({ game, images, videos, scrollPosition }) {
               </Grid>
             </Grid>
           </Grid>
-          <Grid item container direction='row' style={{ marginTop: '2em' }}>
-            <Grid item md={12}>
-              <Slider {...settings}>
-                {game.clip && (
-                  <div className={classes.videoWrapper}>
-                    <video
-                      src={game.clip.clips.full}
-                      poster={game.clip.preview}
-                      className={classes.gameImage}
-                      onClick={e =>
-                        e.target.paused ? e.target.play() : e.target.pause()
-                      }
-                    />
-                    <FaPlay className={classes.playButton} />
-                  </div>
-                )}
-
-                {videos.map((video, i) => (
-                  <div key={i} className={classes.videoWrapper}>
-                    <video
-                      src={video.data['480']}
-                      poster={video.preview}
-                      className={classes.gameImage}
-                      onClick={e =>
-                        e.target.paused ? e.target.play() : e.target.pause()
-                      }
-                    />
-                    <FaPlay className={classes.playButton} />
-                  </div>
-                ))}
-
-                {images.map(image => (
-                  <LazyLoadImage
-                    effect='blur'
-                    scrollPosition={scrollPosition}
-                    key={image.id}
-                    className={classes.gameImage}
-                    src={image.image}
-                    alt={`image of ${game.name}`}
-                    placeholderSrc={image.image}
-                  />
-                ))}
-              </Slider>
-            </Grid>
-          </Grid>
         </Grid>
       </div>
+      <Grid item container direction='row' className={classes.slider}>
+        <Grid item xs={12}>
+          <Slider {...settings}>
+            {game.clip && (
+              <div className={classes.videoWrapper}>
+                <video
+                  src={game.clip.clips.full}
+                  poster={game.clip.preview}
+                  className={classes.gameImage}
+                  onClick={e =>
+                    e.target.paused ? e.target.play() : e.target.pause()
+                  }
+                />
+                <FaPlay className={classes.playButton} />
+              </div>
+            )}
+
+            {videos.map((video, i) => (
+              <div key={i} className={classes.videoWrapper}>
+                <video
+                  src={video.data['480']}
+                  poster={video.preview}
+                  className={classes.gameImage}
+                  onClick={e =>
+                    e.target.paused ? e.target.play() : e.target.pause()
+                  }
+                />
+                <FaPlay className={classes.playButton} />
+              </div>
+            ))}
+
+            {images.map(image => (
+              <LazyLoadImage
+                effect='blur'
+                scrollPosition={scrollPosition}
+                key={image.id}
+                className={classes.gameImage}
+                src={image.image}
+                alt={`image of ${game.name}`}
+              />
+            ))}
+          </Slider>
+        </Grid>
+      </Grid>
     </React.Fragment>
   );
 }

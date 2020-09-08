@@ -149,8 +149,8 @@ const SortBar = props => {
           <LazyLoadImage
             className={classes.avatar}
             src={info.image_background}
-            effect='opacity'
-            placeholderSrc={info.clip ? info.clip.preview : null}
+            effect='blur'
+           
           />
         );
     }

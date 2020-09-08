@@ -170,7 +170,6 @@ const GameCard = ({ info, scrollPosition }) => {
                 muted={true}
                 autoPlay={true}
                 loop={true}
-                poster={<CircularProgress style={{zIndex: '999'}} />}
                 elevation={0}
                 component='video'
                 className={classes.cardVideo}
@@ -195,7 +194,7 @@ const GameCard = ({ info, scrollPosition }) => {
                 src={info.background_image}
                 effect='blur'
                 scrollPosition={scrollPosition}
-                placeholderSrc={info.background_image}
+                
               />
 
               {info.clip && <FaPlay className={classes.playButton} />}
