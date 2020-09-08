@@ -5,7 +5,8 @@ import * as types from './actions/types'
 const initialUserState = {
   authenticated: false,
   credentials: {},
-  loading: false
+  loading: false,
+  errors: ''
 }
 
 // USER REDUCER
@@ -28,6 +29,18 @@ const userReducer = (state = initialUserState, { type, payload }) => {
       return {
         ...state,
         authenticated: true
+      };
+      case types.SET_ERRORS:
+      return {
+        ...state,
+        loading: false,
+        errors: payload
+      };
+    case types.CLEAR_ERRORS:
+      return {
+        ...state,
+        loading: false,
+        errors: null
       };
     default:
       return state

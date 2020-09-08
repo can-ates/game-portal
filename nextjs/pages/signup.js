@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from '../src/Link';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -16,9 +16,10 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import TextField from '@material-ui/core/TextField';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
-
-import {signUpUser} from '../actions/userActions'
+import { signUpUser } from '../actions/userActions';
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -90,12 +91,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Signup = (props) => {
+function Alert(props) {
+  return <MuiAlert elevation={6} variant='filled' {...props} />;
+}
+
+
+const Signup = props => {
   const theme = useTheme();
   const classes = useStyles();
+  const [open, setOpen] = useState(false)
   const [visibility, setVisibility] = useState(false);
-  const router = useRouter()
-  const dispatch = useDispatch()
+  const router = useRouter();
+  const error = useSelector(state => state.user.errors);
+  const dispatch = useDispatch();
 
   const CustomInputComponent = props => (
     <TextField
@@ -115,10 +123,29 @@ const Signup = (props) => {
     setVisibility(pr => !pr);
   }, []);
 
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   return (
     <React.Fragment>
       <div className={classes.background} />
-
+      <Snackbar
+        style={{ marginTop: '100px' }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleClose} severity='error'>
+          {error}
+        </Alert>
+      </Snackbar>
       <div style={{ height: 'calc(100vh - 100px)' }}>
         <div className={classes.signUpWrapper}>
           <Grid container direction='column' align='center'>
@@ -153,12 +180,15 @@ const Signup = (props) => {
                     )
                     .required('Password confirm is required'),
                 })}
-                onSubmit={(values, { setSubmitting }) => {
-                  console.log(values, router)
-
-                  dispatch(signUpUser(values, router))
-                  setSubmitting(false)
+                onSubmit={(values, { setSubmitting, resetForm }) => {
                   
+
+                  dispatch(signUpUser(values, router));
+                  if (error) {
+                    resetForm({ values: '' });
+                    setOpen(true);
+                  }
+                  setSubmitting(false);
                 }}
               >
                 {({ isSubmitting, isValid, dirty }) => (
@@ -224,7 +254,7 @@ const Signup = (props) => {
                     />
 
                     <Button
-                    type='submit'
+                      type='submit'
                       className={classes.submit}
                       variant='contained'
                       disabled={!isValid || isSubmitting || !dirty}
