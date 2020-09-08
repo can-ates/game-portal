@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -127,6 +128,7 @@ function Header() {
 
   const theme = useTheme();
   const classes = useStyles();
+  const user = useSelector(state => state.user)
   const [search, setSearch] = React.useState('')
   const [results, setResults] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -181,6 +183,7 @@ function Header() {
     ></Menu>
   );
 
+  //SEARCH GAME
   const handleSearch = e => {
     setSearch(e.target.value)
     setResults([]);

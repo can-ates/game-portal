@@ -3,12 +3,12 @@ import useSWR from 'swr';
 import axios from 'axios';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import Avatar from '@material-ui/core/Avatar';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Collapse from '@material-ui/core/Collapse';
@@ -25,14 +25,12 @@ import { SiNintendo3Ds } from 'react-icons/si';
 import { SiGroupon } from 'react-icons/si';
 import { SiEpicgames } from 'react-icons/si';
 import { SiItchDotIo } from 'react-icons/si';
+import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
     width: '100%',
-  },
-  anan: {
-    border: '1px solid red',
   },
   root: {
     width: '100%',
@@ -43,14 +41,29 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: theme.spacing(4),
   },
   icon: {
+    minWidth: 'auto',
     color: 'white',
-    margin: 'auto',
-    fontSize: '1.5rem',
+    marginRight: '0.3em',
+    fontSize: '1.0rem',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.75rem',
+      
+    },
   },
-  avatar : {
-    height : '2em',
+  avatar: {
+    height: '2em',
     width: '3em',
-    borderRadius: '10px'
+    borderRadius: '10px',
+    marginLeft: 'auto',
+    
+  },
+  sortName : {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '0.85rem'
+    },
+    [theme.breakpoints.down('xs')]: {
+      fontSize: '0.75rem'
+    },
   }
 }));
 
@@ -60,6 +73,7 @@ const SortBar = props => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const theme = useTheme();
+  const matchesSM = useMediaQuery(theme.breakpoints.down('sm'))
 
   const { data, error } = useSWR(
     `https://api.rawg.io/api/${props.type}?page_size=${props.size}`,
@@ -95,48 +109,50 @@ const SortBar = props => {
       case 'PlayStation 2':
       case 'PS Vita':
       case 'PSP':
-        return <FaPlaystation key='PlayStation' className={classes.icon} />;
+        return <FaPlaystation  key='PlayStation' style={{fontSize: '1.5rem'}} />;
       case 'Xbox':
       case 'Xbox Store':
       case 'Xbox 360 Store':
       case 'Xbox One':
       case 'Xbox Series X':
       case 'Xbox 360':
-        return <FaXbox key={info.name} className={classes.icon} />;
+        return <FaXbox key={info.name} style={{fontSize: '1.5rem'}} />;
       case 'PC':
-        return <FaWindows key={info.name} className={classes.icon} />;
+        return <FaWindows key={info.name} style={{fontSize: '1.5rem'}} />;
       case 'Steam':
-        return <FaSteam key={info.name} className={classes.icon} />;
+        return <FaSteam key={info.name} style={{fontSize: '1.5rem'}} />;
       case 'Epic Games':
-        return <SiEpicgames key={info.name} className={classes.icon} />;
+        return <SiEpicgames key={info.name} style={{fontSize: '1.5rem'}} />;
       case 'GOG':
-        return <SiGroupon key={info.name} className={classes.icon} />;
+        return <SiGroupon key={info.name} style={{fontSize: '1.5rem'}} />;
       case 'Nintendo Switch':
       case 'Nintendo Store':
-        return <SiNintendoswitch key={info.name} className={classes.icon} />;
+        return <SiNintendoswitch key={info.name} style={{fontSize: '1.5rem'}} />;
       case 'Nintendo DS':
       case 'Nintendo 3DS':
       case 'Nintendo DSi':
-        return <SiNintendo3Ds key={info.name} className={classes.icon} />;
+        return <SiNintendo3Ds key={info.name}  style={{fontSize: '1.5rem'}}/>;
       case 'Apple Macintosh':
       case 'iOS':
       case 'macOS':
       case 'App Store':
-        return <FaApple key={info.name} className={classes.icon} />;
+        return <FaApple key={info.name} style={{fontSize: '1.5rem'}} />;
       case 'Android':
       case 'Google Play':
-        return <SiAndroid key={info.name} className={classes.icon} />;
+        return <SiAndroid key={info.name} />;
       case 'Linux':
-        return <FaLinux key={info.name} className={classes.icon} />;
+        return <FaLinux key={info.name} />;
       case 'itch.io':
-        return <SiItchDotIo key={info.name} className={classes.icon} />;
+        return <SiItchDotIo key={info.name} />;
       default:
-        return <LazyLoadImage
-        className={classes.avatar}
-        src={info.image_background}
-        effect='opacity'
-        placeholderSrc={info.clip ? info.clip.preview : null}
-      />
+        return (
+          <LazyLoadImage
+            className={classes.avatar}
+            src={info.image_background}
+            effect='opacity'
+            placeholderSrc={info.clip ? info.clip.preview : null}
+          />
+        );
     }
   };
 
@@ -150,7 +166,7 @@ const SortBar = props => {
             disableGutters
             disableSticky
             style={{
-              fontSize: '1.5rem',
+              fontSize: matchesSM ? '1.0rem' : '1.5rem',
               color: theme.palette.green.light,
               fontWeight: '900',
             }}
@@ -164,9 +180,19 @@ const SortBar = props => {
       >
         {data.slice(0, 3).map(data => {
           return (
-            <ListItem button key={data.id} data-key={data.id} disableGutters>
-            <ListItemIcon>{renderIcons(data)}</ListItemIcon>{/* */}
-              <ListItemText onClick={handleSort} primary={data.name} />
+            <ListItem
+              onClick={handleSort}
+              button
+              key={data.id}
+              data-key={data.id}
+              disableGutters
+              className={classes.listItem}
+              
+              
+            >
+              <ListItemIcon  className={classes.icon} >{renderIcons(data)}</ListItemIcon>
+              {/* */}
+              <ListItemText disableTypography  primary={<Typography className={classes.sortName}>{data.name}</Typography>} />
             </ListItem>
           );
         })}
@@ -179,9 +205,10 @@ const SortBar = props => {
                   button
                   data-key={data.id}
                   key={data.id}
+                  onClick={handleSort}
                 >
-                  <ListItemIcon>{renderIcons(data)}</ListItemIcon>
-                  <ListItemText onClick={handleSort} primary={data.name} />
+                  <ListItemIcon className={classes.icon} >{renderIcons(data)}</ListItemIcon>
+                  <ListItemText disableTypography  primary={<Typography className={classes.sortName}>{data.name}</Typography>} />
                 </ListItem>
               );
             })}

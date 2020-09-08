@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '../../src/Link';
 import { LazyLoadImage, trackWindowScroll } from 'react-lazy-load-image-component';
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
       '&:hover': {
         position: 'absolute',
         transform: 'scale(1.15)',
-        minHeight: '35em',
+        minHeight: '33em',
         zIndex: '100',
         backgroundColor: 'rgba(18,18,18, 0.8)',
       },
@@ -49,8 +49,9 @@ const useStyles = makeStyles(theme => ({
   },
 
   cardVideo: {
-    height: '20em',
-    maxHeight: '20em',
+    height: 'auto',
+    minHeight: '20em',
+    maxHeight: '30em',
     width: '100%',
     objectFit: 'fill',
     zIndex: '12',
@@ -58,7 +59,7 @@ const useStyles = makeStyles(theme => ({
   videoDetail: {
     height: 'auto',
     position: 'absolute',
-    bottom: '-10px',
+    bottom: '0px',
     zIndex: '1000',
     width: '100%',
     borderBottomLeftRadius: '10px',
@@ -106,15 +107,15 @@ const useStyles = makeStyles(theme => ({
   },
   fullButton: {
     position: 'absolute',
-    right: '0',
+    right: '-5%',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '0.5em',
     marginRight: '0.5em',
-    bottom: '15em',
+    top: '0',
     color: theme.palette.green.light,
-    backgroundColor: 'rgba(18,18,18, 0.4)',
+    backgroundColor: 'rgba(18,18,18, 0.2)',
   },
   gameName: {
     color: theme.palette.green.light,
@@ -128,7 +129,6 @@ const useStyles = makeStyles(theme => ({
 
 const GameCard = ({ info, scrollPosition }) => {
   const [showVideo, setShowVideo] = useState(false);
-  const media = useRef();
   const classes = useStyles();
 
   const renderIcons = useCallback(
@@ -150,17 +150,19 @@ const GameCard = ({ info, scrollPosition }) => {
     [info.parent_platforms]
   );
 
+  
+  
   return (
     <React.Fragment>
       <div
         style={{ position: 'relative', height: '100%' }}
-        onMouseOver={() => !showVideo && setShowVideo(true)}
+        
       >
         <Card
-          ref={media}
           className={classes.card}
           elevation={0}
           onMouseLeave={() => showVideo && setShowVideo(false)}
+          onMouseOver={() => !showVideo && setShowVideo(true)}
         >
           {showVideo && info.clip ? (
             <div>
@@ -214,6 +216,7 @@ const GameCard = ({ info, scrollPosition }) => {
                 component={Link}
                 href={`/games/${[info.slug]}`}
                 variant='subtitle1'
+                noWrap
               >
                 {info.name}
               </Typography>

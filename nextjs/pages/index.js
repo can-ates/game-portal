@@ -3,8 +3,8 @@ import { useSWRInfinite } from 'swr';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 
-import { makeStyles } from '@material-ui/core/styles';
-
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
@@ -29,6 +29,8 @@ const fetcher = url => axios.get(url).then(res => res.data.results);
 function Index(props) {
   const observer = useRef();
   const classes = useStyles();
+  const theme = useTheme();
+  const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
   const [title, setTitle] = useState('All Games');
   const [genre, setGenre] = useState(null);
   const [platform, setPlatform] = useState(null);
@@ -118,8 +120,8 @@ function Index(props) {
         <Grid item container direction='row' justify='space-between'>
           <Grid item>
             <Typography
-              align='left'
-              style={{ marginBottom: '1.250em' }}
+              align={matchesSM ? 'center' : 'left'}
+              style={{ marginBottom: '1.250em', fontSize: matchesSM && '1.5rem' }}
               variant='h1'
             >
               {title}
@@ -128,8 +130,19 @@ function Index(props) {
         </Grid>
 
         <Grid spacing={5} item container direction='row'>
-          <Grid justify='flex-start' md={2} item container direction='column'>
-            <div className={classes.navbar}>
+          <Grid
+            justify={matchesSM ? 'center' : 'flex-start'}
+            md={2}
+            item
+            container
+            direction={matchesSM ? 'row' : 'column'}
+          >
+            <Grid
+              item
+              container
+              justify={matchesSM ? 'space-between' : 'flex-start'}
+              className={matchesSM ? classes.small : classes.navbar}
+            >
               <Grid item>
                 <SortBar
                   type='genres'
@@ -154,7 +167,7 @@ function Index(props) {
                   handleSorting={handleSorting}
                 />
               </Grid>
-            </div>
+            </Grid>
           </Grid>
           <Grid
             item
@@ -170,8 +183,8 @@ function Index(props) {
                     <Skeleton
                       animation='wave'
                       variant='rect'
-                      width={250}
-                      height={350}
+                      width={matchesSM ? 350 : 250}
+                      height={matchesSM ? 450 : 350}
                       style={{ borderRadius: '5px' }}
                     />
                   </Grid>
@@ -203,7 +216,6 @@ function Index(props) {
           </Grid>
         </Grid>
       </Grid>
-      
     </div>
   );
 }
