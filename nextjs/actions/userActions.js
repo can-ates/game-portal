@@ -37,6 +37,15 @@ export const signInUser = (userData, router) => dispatch => {
     });
 };
 
+export const uploadImage = (image) => dispatch => {
+  instance
+  .post('/user/image',image )
+  .then(() => {
+    dispatch(getAuthenticatedUser())
+  })
+  .catch((err) => console.log(err))
+}
+
 export const logoutUser = () => dispatch => {
   localStorage.removeItem('idToken');
   delete instance.defaults.headers.common['Authorization'];

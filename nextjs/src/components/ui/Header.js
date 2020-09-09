@@ -19,6 +19,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+
+import { logoutUser, uploadImage } from '../../../actions/userActions';
+
 import Link from '../../../src/Link';
 
 const useStyles = makeStyles(theme => ({
@@ -109,16 +113,38 @@ const useStyles = makeStyles(theme => ({
     zIndex: '11',
   },
   listItem: {
-    '&:hover':{
+    '&:hover': {
       cursor: 'pointer',
-      backgroundColor: theme.palette.green.dark
-    }
+      backgroundColor: theme.palette.green.dark,
+    },
   },
   resultImage: {
     height: 30,
     width: 40,
     objectFit: 'cover',
-    borderRadius: '50%'
+    borderRadius: '50%',
+  },
+  root: {
+    position: 'relative',
+  },
+  dropdown: {
+    position: 'absolute',
+    top: 55,
+    right: 0,
+    left: '-5.7em',
+    zIndex: 1,
+    width: '15em',
+    borderRadius: '10px',
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.green.light,
+  },
+  detail: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
+  user__editButton :{
+    borderColor: '#2d3142',
+    color: '#2d3142'
   }
 }));
 
@@ -128,10 +154,12 @@ function Header() {
 
   const theme = useTheme();
   const classes = useStyles();
-  const user = useSelector(state => state.user)
-  const [search, setSearch] = React.useState('')
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.user);
+  const [search, setSearch] = React.useState('');
   const [results, setResults] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMenuOpen = Boolean(anchorEl);
@@ -185,7 +213,7 @@ function Header() {
 
   //SEARCH GAME
   const handleSearch = e => {
-    setSearch(e.target.value)
+    setSearch(e.target.value);
     setResults([]);
     cancel && cancel();
 
@@ -203,6 +231,31 @@ function Header() {
       });
   };
 
+  //LOG OUT USER
+  const logOut = () => {
+    dispatch(logoutUser());
+  };
+
+
+
+  //CLICKAWAY LISTENER MODIFICATIONS
+  const handleClick = () => {
+    setOpen(prev => !prev);
+  };
+
+  const handleClickAway = () => {
+    setOpen(false);
+  };
+
+  //HANDLE IMAGE
+  const handleImage = (e) => {
+    const image = e.target.files[0]
+    const formData = new FormData()
+
+    formData.append('image', image, image.name)
+    dispatch(uploadImage(formData))
+  }
+
   return (
     <div className={classes.grow}>
       <AppBar
@@ -219,7 +272,7 @@ function Header() {
           >
             <MenuIcon />
           </IconButton>
-          <Button  variant='text' disableRipple component={Link} href='/'>
+          <Button variant='text' disableRipple component={Link} href='/'>
             <Typography className={classes.title} variant='h5' noWrap>
               Game
             </Typography>
@@ -248,71 +301,164 @@ function Header() {
               }}
               inputProps={{ 'aria-label': 'search' }}
             />
-            {search && <div className={classes.searchResult}>
-            <List>
-              {results.map(result => {
-                return (
-                  <ListItem divider={true} component={Link} href={`/games/${[result.slug]}`} className={classes.listItem} >
-                    <ListItemAvatar>
-                      <LazyLoadImage
-                        alt={`Avatar of ${result.name}`}
-                        src={result.background_image}
-                        className={classes.resultImage}
-                        effect='opacity'
-                        placeholderSrc={result.background_image}
-                      />
-                    </ListItemAvatar>
-                    <ListItemText
-                      disableTypography
-                      primary={
-                        <Typography variant='body1'>{result.name}</Typography>
-                      }
-                    />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </div>}
+            {search && (
+              <div className={classes.searchResult}>
+                <List>
+                  {results.map(result => {
+                    return (
+                      <ListItem
+                        divider={true}
+                        component={Link}
+                        href={`/games/${[result.slug]}`}
+                        className={classes.listItem}
+                      >
+                        <ListItemAvatar>
+                          <LazyLoadImage
+                            alt={`Avatar of ${result.name}`}
+                            src={result.background_image}
+                            className={classes.resultImage}
+                            effect='opacity'
+                            placeholderSrc={result.background_image}
+                          />
+                        </ListItemAvatar>
+                        <ListItemText
+                          disableTypography
+                          primary={
+                            <Typography variant='body1'>
+                              {result.name}
+                            </Typography>
+                          }
+                        />
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </div>
+            )}
           </div>
           <div className={classes.grow} />
           <div className={classes.sign}>
             <div className={classes.sign}>
-              <Button
-                disableRipple
-                size='large'
-                variant='text'
-                component={Link}
-                href='/signin'
-              >
-                Sign{' '}
-                <span
-                  style={{
-                    color: theme.palette.green.light,
-                    marginLeft: '5px',
-                  }}
-                >
-                  {' '}
-                  In
-                </span>{' '}
-              </Button>
-              <Button
-                disableRipple
-                size='large'
-                variant='text'
-                component={Link}
-                href='/signup'
-              >
-                Sign{' '}
-                <span
-                  style={{
-                    color: theme.palette.green.light,
-                    marginLeft: '5px',
-                  }}
-                >
-                  {' '}
-                  Up
-                </span>
-              </Button>
+              {user.authenticated ? (
+                <React.Fragment>
+                  <ClickAwayListener onClickAway={handleClickAway}>
+                    <div className={classes.root}>
+                      <Button
+                        disableRipple
+                        size='large'
+                        variant='text'
+                        onClick={handleClick}
+                      >
+                        <Avatar  src={user.imageUrl} />
+                      </Button>
+                      {open ? (
+                        <div className={classes.dropdown}>
+                          <div className={classes.detail}>
+                            <Typography
+                              variant='caption'
+                              style={{ color: '#2d3142' }}
+                              display='inline'
+                            >
+                              Handle:{' '}
+                            </Typography>
+                            <Typography variant='body2' display='inline'>
+                              {user.handle}
+                            </Typography>
+                          </div>
+                          <div className={classes.detail}>
+                            <Typography
+                              variant='caption'
+                              style={{ color: '#2d3142' }}
+                              display='inline'
+                            >
+                              Email:{' '}
+                            </Typography>
+                            <Typography variant='body2' display='inline'>
+                              {user.email}
+                            </Typography>
+                          </div>
+                          <div style={{marginTop: '1em', textAlign: 'end'}}>
+                            <input
+                              accept='image/*'
+                              id='outlined-button-file'
+                              type='file'
+                              onChange={handleImage}
+                              style={{display: 'none'}}
+                            />
+                            <label htmlFor='outlined-button-file'>
+                              <Button
+                                variant='outlined'
+                                size='small'
+                                className={classes.user__editButton}
+                                component='span'
+                              >
+                                Edit Picture
+                              </Button>
+                            </label>
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  </ClickAwayListener>
+
+                  <Button
+                    disableRipple
+                    size='large'
+                    variant='text'
+                    onClick={logOut}
+                  >
+                    Log{' '}
+                    <span
+                      style={{
+                        color: theme.palette.green.light,
+                        marginLeft: '5px',
+                      }}
+                    >
+                      {' '}
+                      Out
+                    </span>{' '}
+                  </Button>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <Button
+                    disableRipple
+                    size='large'
+                    variant='text'
+                    component={Link}
+                    href='/signin'
+                  >
+                    Sign{' '}
+                    <span
+                      style={{
+                        color: theme.palette.green.light,
+                        marginLeft: '5px',
+                      }}
+                    >
+                      {' '}
+                      In
+                    </span>{' '}
+                  </Button>
+                  <Button
+                    disableRipple
+                    size='large'
+                    variant='text'
+                    component={Link}
+                    href='/signup'
+                  >
+                    Sign{' '}
+                    <span
+                      style={{
+                        color: theme.palette.green.light,
+                        marginLeft: '5px',
+                      }}
+                    >
+                      {' '}
+                      Up
+                    </span>
+                  </Button>
+                </React.Fragment>
+              )}
             </div>
           </div>
         </Toolbar>
