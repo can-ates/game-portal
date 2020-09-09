@@ -35,7 +35,10 @@ const useStyles = makeStyles(theme => ({
     height: 'auto',
     opacity: '0.4',
   },
-  signUpWrapper: {
+  snackbar: {
+    marginTop: '100px',
+  },
+  signin: {
     backgroundColor: 'transparent',
     border: `1px solid ${theme.palette.green.dark}`,
     width: 'auto',
@@ -49,27 +52,30 @@ const useStyles = makeStyles(theme => ({
     transform: 'translate(-50%, -50%)',
     overflow: 'auto',
   },
-  form: {
+  signin__title: {
+    marginTop: '2em',
+  },
+  signin__form: {
     display: 'flex',
     flexDirection: 'column',
     padding: '2em 4em',
   },
-  formField: {
+  signin__formField: {
     marginBottom: '2em',
     position: 'relative',
   },
-  adornment: {
+  signin__error: {
+    position: 'absolute',
+    bottom: '-1.5em',
+    color: '#F44330',
+  },
+  signin__adornment: {
     zIndex: '150',
     '&:hover': {
       cursor: 'pointer',
     },
   },
-  submit: {
-    '&:not([disabled])': {
-      backgroundColor: theme.palette.green.dark,
-      color: 'white',
-    },
-  },
+
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
@@ -87,6 +93,19 @@ const useStyles = makeStyles(theme => ({
       color: 'white',
       opacity: '0.6',
     },
+  },
+  signin__submit: {
+    '&:not([disabled])': {
+      backgroundColor: theme.palette.green.dark,
+      color: 'white',
+    },
+  },
+  signin__signinButton: {
+    marginLeft: '0.3em',
+    textTransform: 'none',
+    textDecoration: 'none',
+    fontSize: '1em',
+    borderBottom: '2px solid white',
   },
 }));
 
@@ -107,12 +126,12 @@ const Signin = props => {
     <TextField
       helperText={
         <ErrorMessage
-          style={{ position: 'absolute', bottom: '-1.5em', color: '#F44330' }}
+          className={classes.signin__error}
           name={props.name}
           component='span'
         />
       }
-      className={classes.formField}
+      className={classes.signin__formField}
       {...props}
     />
   );
@@ -135,7 +154,7 @@ const Signin = props => {
 
       <div style={{ height: 'calc(100vh - 100px)' }}>
         <Snackbar
-          style={{ marginTop: '100px' }}
+          className={classes.snackbar}
           open={open}
           autoHideDuration={6000}
           onClose={handleClose}
@@ -145,11 +164,11 @@ const Signin = props => {
             {error}
           </Alert>
         </Snackbar>
-        <div className={classes.signUpWrapper}>
+        <div className={classes.signin}>
           <Grid container direction='column' align='center'>
             <Grid item>
               {' '}
-              <Typography variant='h4' style={{ marginTop: '2em' }}>
+              <Typography variant='h4' className={classes.signin__title}>
                 Welcome back
               </Typography>{' '}
             </Grid>
@@ -175,7 +194,7 @@ const Signin = props => {
                 }}
               >
                 {({ isSubmitting, isValid, dirty }) => (
-                  <Form className={classes.form}>
+                  <Form className={classes.signin__form}>
                     <Field
                       label='Email'
                       type='email'
@@ -199,12 +218,12 @@ const Signin = props => {
                           <InputAdornment position='end'>
                             {visibility ? (
                               <VisibilityOffIcon
-                                className={classes.adornment}
+                                className={classes.signin__adornment}
                                 onClick={toggleVisibility}
                               />
                             ) : (
                               <VisibilityIcon
-                                className={classes.adornment}
+                                className={classes.signin__adornment}
                                 onClick={toggleVisibility}
                               />
                             )}
@@ -217,7 +236,7 @@ const Signin = props => {
 
                     <Button
                       type='submit'
-                      className={classes.submit}
+                      className={classes.signin__submit}
                       variant='contained'
                       disabled={!isValid || isSubmitting || !dirty}
                     >
@@ -232,13 +251,7 @@ const Signin = props => {
                 Don't have an account ?
               </Typography>
               <Button
-                style={{
-                  marginLeft: '0.3em',
-                  textTransform: 'none',
-                  textDecoration: 'none',
-                  fontSize: '1em',
-                  borderBottom: '2px solid white',
-                }}
+                className={classes.signin__signinButton}
                 size='small'
                 variant='text'
                 component={Link}

@@ -62,14 +62,36 @@ const useStyles = makeStyles(theme => ({
   wrapper: {
     padding: '8em 10em',
     [theme.breakpoints.down('sm')]: {
-      padding: '1em 3em',
+      padding: '1em 2em',
     },
   },
-  about: {
+  leftColumn__cardImage: {
+    objectFit: 'cover',
+    width: '100%',
+    height: '20em',
+    borderRadius: '10px',
+  },
+  leftColumn__links: {
+    marginTop: '1rem',
+  },
+  leftColumn__urls: {
+    display: 'inline-block',
+    marginRight: '1em',
+  },
+  centerColumn__date: {
+    margin: '1.3em 0 1em 0',
+  },
+  centerColumn__about: {
+    marginTop: '5em',
+  },
+  centerColumn__genreTitle: {
+    marginTop: '1em',
+  },
+  centerColumn__about: {
     marginLeft: '1em',
     color: theme.palette.green.light,
   },
-  icon: {
+  centerColumn__icon: {
     marginLeft: '1em',
     fontSize: '1.3rem',
     '&:hover': {
@@ -79,20 +101,44 @@ const useStyles = makeStyles(theme => ({
     verticalAlign: 'middle',
     display: 'inline',
   },
-  content: {
+  centerColumn__description: {
     display: '-webkit-box',
     '-webkit-line-clamp': '4',
     '-webkit-box-orient': 'vertical',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
-  tags: {
+  centerColumn__moreButton: {
+    color: theme.palette.green.light,
+  },
+  rightColumn: {
+    padding: '1em 1em 0 1em',
+    [theme.breakpoints.down('sm')]: {
+      padding: '0',
+    },
+  },
+  rightColumn__title: {
+    marginBottom: '4em',
+  },
+  rightColumn__metascore: {
+    minWidth: '9em',
+    [theme.breakpoints.down('sm')]: {
+      width: '13em',
+    },
+    width: 'auto',
+    margin: '0 auto',
+  },
+
+  rightColumn__tags: {
     backgroundColor: 'rgba(119, 146, 118, 0.3)',
     opacity: '0.7',
     marginRight: '1em',
     display: 'inline-block',
   },
-  videoWrapper: {
+  slider: {
+    padding: '1em',
+  },
+  slider__videoWrapper: {
     position: 'relative',
     '&:focus': {
       outline: 'none',
@@ -109,7 +155,7 @@ const useStyles = makeStyles(theme => ({
     height: 'auto',
     width: 'auto',
   },
-  gameImage: {
+  slider__gameImage: {
     padding: '0.5em 1em',
     borderRadius: '20px',
     objectFit: 'fill',
@@ -122,7 +168,7 @@ const useStyles = makeStyles(theme => ({
     height: '14em',
     width: '100%',
   },
-  playButton: {
+  slider__playButton: {
     position: 'absolute',
     bottom: '2%',
     right: '2%',
@@ -131,19 +177,6 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.green.light,
     borderRadius: '50%',
     padding: '0.2em',
-  },
-  cardImage: {
-    objectFit: 'cover',
-    width: '100%',
-    height: '20em',
-    borderRadius: '10px',
-  },
-  urls: {
-    display: 'inline-block',
-    marginRight: '1em',
-  },
-  slider: {
-   padding: '1em'
   },
 }));
 
@@ -238,7 +271,7 @@ function Game({ game, images, videos, scrollPosition }) {
         return (
           <FaPlaystation
             style={{ color: '#003087' }}
-            className={classes.icon}
+            className={classes.centerColumn__icon}
           />
         );
       case 'Xbox':
@@ -246,45 +279,68 @@ function Game({ game, images, videos, scrollPosition }) {
       case 'Xbox One':
       case 'Xbox Series X':
       case 'Xbox 360':
-        return <FaXbox style={{ color: '#107C10' }} className={classes.icon} />;
+        return (
+          <FaXbox
+            style={{ color: '#107C10' }}
+            className={classes.centerColumn__icon}
+          />
+        );
       case 'Epic Games':
-        return <SiEpicgames className={classes.icon} />;
+        return <SiEpicgames className={classes.centerColumn__icon} />;
       case 'PC':
         return (
-          <FaWindows style={{ color: '#00adef' }} className={classes.icon} />
+          <FaWindows
+            style={{ color: '#00adef' }}
+            className={classes.centerColumn__icon}
+          />
         );
       case 'Steam':
         return (
-          <FaSteam style={{ color: '#171a21' }} className={classes.icon} />
+          <FaSteam
+            style={{ color: '#171a21' }}
+            className={classes.centerColumn__icon}
+          />
         );
       case 'GOG':
-        return <SiGroupon className={classes.icon} />;
+        return <SiGroupon className={classes.centerColumn__icon} />;
       case 'Nintendo Switch':
       case 'Nintendo Store':
-        return <SiNintendoswitch className={classes.icon} />;
+        return <SiNintendoswitch className={classes.centerColumn__icon} />;
       case 'Nintendo DS':
       case 'Nintendo 3DS':
       case 'Nintendo DSi':
-        return <SiNintendo3Ds className={classes.icon} />;
+        return <SiNintendo3Ds className={classes.centerColumn__icon} />;
       case 'Apple Macintosh':
       case 'iOS':
       case 'macOS':
       case 'App Store':
         return (
-          <FaApple style={{ color: '#555555' }} className={classes.icon} />
+          <FaApple
+            style={{ color: '#555555' }}
+            className={classes.centerColumn__icon}
+          />
         );
       case 'Android':
       case 'Google Play':
         return (
-          <SiAndroid style={{ color: '#78C257' }} className={classes.icon} />
+          <SiAndroid
+            style={{ color: '#78C257' }}
+            className={classes.centerColumn__icon}
+          />
         );
       case 'Linux':
         return (
-          <FaLinux style={{ color: '#333333' }} className={classes.icon} />
+          <FaLinux
+            style={{ color: '#333333' }}
+            className={classes.centerColumn__icon}
+          />
         );
       case 'itch.io':
         return (
-          <SiItchDotIo style={{ color: '#fa5c5c' }} className={classes.icon} />
+          <SiItchDotIo
+            style={{ color: '#fa5c5c' }}
+            className={classes.centerColumn__icon}
+          />
         );
       default:
         return;
@@ -303,13 +359,13 @@ function Game({ game, images, videos, scrollPosition }) {
         <Grid container direction='column'>
           <Grid item container direction='row' spacing={4}>
             {/* LEFT COLUMN */}
-            <Grid item md={3}>
+            <Grid item md={3} className={classes.leftColumn}>
               <Grid container direction='column'>
                 <Grid item>
                   <LazyLoadImage
                     src={game.background_image}
                     effect='blur'
-                    className={classes.cardImage}
+                    className={classes.leftColumn__cardImage}
                   />
                 </Grid>
                 {/* WEBSITE-REDDIT-METACRITIC */}
@@ -317,14 +373,14 @@ function Game({ game, images, videos, scrollPosition }) {
                 <Grid
                   align={matchesSM ? 'center' : null}
                   item
-                  style={{ marginTop: '1rem' }}
+                  className={classes.leftColumn__links}
                 >
                   {game.website && (
                     <Typography
                       component={Link}
                       href={game.website}
                       target='__blank'
-                      className={classes.urls}
+                      className={classes.leftColumn__urls}
                     >
                       Website:{' '}
                       <TiWorld
@@ -337,7 +393,7 @@ function Game({ game, images, videos, scrollPosition }) {
                     <Typography
                       component={Link}
                       href={game.reddit_url}
-                      className={classes.urls}
+                      className={classes.leftColumn__urls}
                       target='__blank'
                     >
                       Reddit:{' '}
@@ -369,14 +425,14 @@ function Game({ game, images, videos, scrollPosition }) {
               </Grid>
             </Grid>
             {/* CENTER COLUMN */}
-            <Grid item md={6}>
+            <Grid item md={6} className={classes.centerColumn}>
               <Grid container direction='column'>
                 {/* TITLE */}
                 <Grid item>
                   <Typography variant='h1'>{game.name}</Typography>
                 </Grid>
                 {/* DATE */}
-                <Grid item style={{ margin: '1.3em 0 1em 0' }}>
+                <Grid item className={classes.centerColumn__date}>
                   <Typography gutterBottom variant='h4' display='inline'>
                     {new Date(game.released)
                       .toDateString()
@@ -398,18 +454,18 @@ function Game({ game, images, videos, scrollPosition }) {
                     </Typography>
                   ))}
                 </Grid>
-                <Grid item style={{ marginTop: '5em' }}>
+                <Grid item className={classes.centerColumn__aboutTitle}>
                   <Typography>About</Typography>
                 </Grid>
                 {/* GENRE */}
-                <Grid item style={{ marginTop: '1em' }}>
+                <Grid item className={classes.centerColumn__genreTitle}>
                   <Typography variant='body2' display='inline' gutterBottom>
                     Genre:
                   </Typography>
                   {game.genres.map(genre => (
                     <Typography
                       variant='subtitle1'
-                      className={classes.about}
+                      className={classes.centerColumn__about}
                       display='inline'
                       key={genre.id}
                     >
@@ -425,7 +481,7 @@ function Game({ game, images, videos, scrollPosition }) {
                   {game.platforms.map(platform => (
                     <Typography
                       variant='subtitle1'
-                      className={classes.about}
+                      className={classes.centerColumn__about}
                       display='inline'
                       key={platform.platform.id}
                     >
@@ -452,13 +508,17 @@ function Game({ game, images, videos, scrollPosition }) {
                   ))}
                 </Grid>
                 {/* DESCRIPTION*/}
-                <Grid item ref={description} className={classes.content}>
+                <Grid
+                  item
+                  ref={description}
+                  className={classes.centerColumn__description}
+                >
                   <div
                     dangerouslySetInnerHTML={{ __html: game.description }}
                   ></div>
                 </Grid>
                 <Button
-                  style={{ color: theme.palette.green.light }}
+                  className={classes.centerColumn__moreButton}
                   onClick={() =>
                     description.current.style.display === 'block'
                       ? (description.current.style.display = '-webkit-box')
@@ -470,24 +530,14 @@ function Game({ game, images, videos, scrollPosition }) {
               </Grid>
             </Grid>
             {/* RIGHT COLUMN */}
-            <Grid
-              item
-              md={3}
-              style={{ padding: matchesSM ? '0' : '1em 1em 0 1em' }}
-            >
+            <Grid item md={3} className={classes.rightColumn}>
               <Grid container direction='column'>
                 {/* METASCORE */}
-                <Grid item style={{ marginBottom: '4em' }}>
+                <Grid item className={classes.rightColumn__title}>
                   <Typography gutterBottom align='center'>
                     Metascore
                   </Typography>
-                  <div
-                    style={{
-                      minWidth: '9em',
-                      width: matchesSM ? '13em' : 'auto',
-                      margin: '0 auto',
-                    }}
-                  >
+                  <div className={classes.rightColumn__metascore}>
                     <CircularProgressbar
                       value={game.metacritic}
                       text={game.metacritic}
@@ -505,7 +555,7 @@ function Game({ game, images, videos, scrollPosition }) {
                     <Typography
                       key={tag.id}
                       gutterBottom
-                      className={classes.tags}
+                      className={classes.rightColumn__tags}
                       variant='subtitle2'
                     >
                       {tag.name}
@@ -521,30 +571,30 @@ function Game({ game, images, videos, scrollPosition }) {
         <Grid item xs={12}>
           <Slider {...settings}>
             {game.clip && (
-              <div className={classes.videoWrapper}>
+              <div className={classes.slider__videoWrapper}>
                 <video
                   src={game.clip.clips.full}
                   poster={game.clip.preview}
-                  className={classes.gameImage}
+                  className={classes.slider__gameImage}
                   onClick={e =>
                     e.target.paused ? e.target.play() : e.target.pause()
                   }
                 />
-                <FaPlay className={classes.playButton} />
+                <FaPlay className={classes.slider__playButton} />
               </div>
             )}
 
             {videos.map((video, i) => (
-              <div key={i} className={classes.videoWrapper}>
+              <div key={i} className={classes.slider__videoWrapper}>
                 <video
                   src={video.data['480']}
                   poster={video.preview}
-                  className={classes.gameImage}
+                  className={classes.slider__gameImage}
                   onClick={e =>
                     e.target.paused ? e.target.play() : e.target.pause()
                   }
                 />
-                <FaPlay className={classes.playButton} />
+                <FaPlay className={classes.slider__playButton} />
               </div>
             ))}
 
@@ -553,7 +603,7 @@ function Game({ game, images, videos, scrollPosition }) {
                 effect='blur'
                 scrollPosition={scrollPosition}
                 key={image.id}
-                className={classes.gameImage}
+                className={classes.slider__gameImage}
                 src={image.image}
                 alt={`image of ${game.name}`}
               />

@@ -36,7 +36,10 @@ const useStyles = makeStyles(theme => ({
     height: 'auto',
     opacity: '0.4',
   },
-  signUpWrapper: {
+  snackbar: {
+    marginTop: '100px',
+  },
+  signup: {
     backgroundColor: 'transparent',
     border: `1px solid ${theme.palette.green.dark}`,
     width: 'auto',
@@ -50,27 +53,30 @@ const useStyles = makeStyles(theme => ({
     transform: 'translate(-50%, -50%)',
     overflow: 'auto',
   },
-  form: {
+  signup__title: {
+    marginTop: '2em',
+  },
+  signup__form: {
     display: 'flex',
     flexDirection: 'column',
     padding: '2em 4em',
   },
-  formField: {
+  signup__formField: {
     marginBottom: '2em',
     position: 'relative',
   },
-  adornment: {
+  signup__error: {
+    position: 'absolute',
+    bottom: '-1.5em',
+    color: '#F44330',
+  },
+  signup__adornment: {
     zIndex: '150',
     '&:hover': {
       cursor: 'pointer',
     },
   },
-  submit: {
-    '&:not([disabled])': {
-      backgroundColor: theme.palette.green.dark,
-      color: 'white',
-    },
-  },
+
   inputInput: {
     padding: theme.spacing(1, 1, 1, 0),
     paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
@@ -89,17 +95,29 @@ const useStyles = makeStyles(theme => ({
       opacity: '0.6',
     },
   },
+  signup__submit: {
+    '&:not([disabled])': {
+      backgroundColor: theme.palette.green.dark,
+      color: 'white',
+    },
+  },
+  signup__signinButton: {
+    marginLeft: '0.3em',
+    textTransform: 'none',
+    textDecoration: 'none',
+    fontSize: '1em',
+    borderBottom: '2px solid white',
+  },
 }));
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
 }
 
-
 const Signup = props => {
   const theme = useTheme();
   const classes = useStyles();
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [visibility, setVisibility] = useState(false);
   const router = useRouter();
   const error = useSelector(state => state.user.errors);
@@ -109,12 +127,12 @@ const Signup = props => {
     <TextField
       helperText={
         <ErrorMessage
-          style={{ position: 'absolute', bottom: '-1.5em', color: '#F44330' }}
+          className={classes.signup__error}
           name={props.name}
           component='span'
         />
       }
-      className={classes.formField}
+      className={classes.signup__formField}
       {...props}
     />
   );
@@ -122,7 +140,6 @@ const Signup = props => {
   const toggleVisibility = useCallback(() => {
     setVisibility(pr => !pr);
   }, []);
-
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -136,7 +153,7 @@ const Signup = props => {
     <React.Fragment>
       <div className={classes.background} />
       <Snackbar
-        style={{ marginTop: '100px' }}
+        className={classes.snackbar}
         open={open}
         autoHideDuration={6000}
         onClose={handleClose}
@@ -147,11 +164,11 @@ const Signup = props => {
         </Alert>
       </Snackbar>
       <div style={{ height: 'calc(100vh - 100px)' }}>
-        <div className={classes.signUpWrapper}>
+        <div className={classes.signup}>
           <Grid container direction='column' align='center'>
             <Grid item>
               {' '}
-              <Typography variant='h4' style={{ marginTop: '2em' }}>
+              <Typography variant='h4' className={classes.signup__title}>
                 Create an account
               </Typography>{' '}
             </Grid>
@@ -181,8 +198,6 @@ const Signup = props => {
                     .required('Password confirm is required'),
                 })}
                 onSubmit={(values, { setSubmitting, resetForm }) => {
-                  
-
                   dispatch(signUpUser(values, router));
                   if (error) {
                     resetForm({ values: '' });
@@ -192,7 +207,7 @@ const Signup = props => {
                 }}
               >
                 {({ isSubmitting, isValid, dirty }) => (
-                  <Form className={classes.form}>
+                  <Form className={classes.signup__form}>
                     <Field
                       type='text'
                       name='handle'
@@ -230,12 +245,12 @@ const Signup = props => {
                           <InputAdornment position='end'>
                             {visibility ? (
                               <VisibilityOffIcon
-                                className={classes.adornment}
+                                className={classes.signup__adornment}
                                 onClick={toggleVisibility}
                               />
                             ) : (
                               <VisibilityIcon
-                                className={classes.adornment}
+                                className={classes.signup__adornment}
                                 onClick={toggleVisibility}
                               />
                             )}
@@ -255,7 +270,7 @@ const Signup = props => {
 
                     <Button
                       type='submit'
-                      className={classes.submit}
+                      className={classes.signup__submit}
                       variant='contained'
                       disabled={!isValid || isSubmitting || !dirty}
                     >
@@ -270,13 +285,7 @@ const Signup = props => {
                 Already have account ?
               </Typography>
               <Button
-                style={{
-                  marginLeft: '0.3em',
-                  textTransform: 'none',
-                  textDecoration: 'none',
-                  fontSize: '1em',
-                  borderBottom: '2px solid white',
-                }}
+                className={classes.signup__signinButton}
                 size='small'
                 variant='text'
                 component={Link}

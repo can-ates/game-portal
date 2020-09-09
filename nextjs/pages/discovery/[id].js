@@ -2,19 +2,37 @@ import React from 'react';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Typography from '@material-ui/core/Typography';
-import { Button } from '@material-ui/core';
-
-const Grid = dynamic(() => import('@material-ui/core/Grid'))
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+const Grid = dynamic(() => import('@material-ui/core/Grid'));
 const GameCard = dynamic(() => import('../../src/components/GameCard'));
 
+const useStyles = makeStyles(theme => ({
+  body: {
+    marginTop: '3em',
+    padding: 20,
+  },
+  body__title: {
+    marginBottom: '2.250em',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '2rem',
+    },
+  },
+  body__cards: {
+    padding: '2em',
+  },
+}));
+
 const Similar = ({ details, game }) => {
+  const classes = useStyles();
+  const theme = useTheme();
+
   return (
-    <div style={{ marginTop: '3em', padding: 20 }}>
+    <div className={classes.body}>
       <Grid container direction='column'>
         <Grid item>
           <Typography
+            className={classes.body__title}
             align='center'
-            style={{ marginBottom: '2.250em' }}
             variant='h1'
           >
             Visually similar games to {game}
@@ -29,7 +47,7 @@ const Similar = ({ details, game }) => {
         >
           {details.map((game, i) => {
             return (
-              <Grid item md={3} sm={6} key={game.id} style={{ padding: '2em' }}>
+              <Grid item md={3} sm={6} key={game.id} className={classes.body__cards}>
                 <GameCard info={game} key={i} />
               </Grid>
             );

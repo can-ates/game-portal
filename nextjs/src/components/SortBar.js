@@ -32,15 +32,23 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     width: '100%',
   },
-  root: {
+  list: {
     width: '100%',
     maxWidth: 360,
     backgroundColor: 'transparent',
   },
+  list__subheader :{
+    [theme.breakpoints.down('sm')]: {
+      fontSize: '1.0rem'
+    },
+    fontSize: '1.5rem',
+    color: theme.palette.green.light,
+    fontWeight: '900',
+  },
   nested: {
     paddingLeft: theme.spacing(4),
   },
-  icon: {
+  list__icon: {
     minWidth: 'auto',
     color: 'white',
     marginRight: '0.3em',
@@ -50,14 +58,14 @@ const useStyles = makeStyles(theme => ({
       
     },
   },
-  avatar: {
+  list__avatar: {
     height: '2em',
     width: '3em',
     borderRadius: '10px',
     marginLeft: 'auto',
     
   },
-  sortName : {
+  list__itemName : {
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.85rem'
     },
@@ -147,7 +155,7 @@ const SortBar = props => {
       default:
         return (
           <LazyLoadImage
-            className={classes.avatar}
+            className={classes.list__avatar}
             src={info.image_background}
             effect='blur'
            
@@ -165,18 +173,14 @@ const SortBar = props => {
           <ListSubheader
             disableGutters
             disableSticky
-            style={{
-              fontSize: matchesSM ? '1.0rem' : '1.5rem',
-              color: theme.palette.green.light,
-              fontWeight: '900',
-            }}
+            className={classes.list__subheader}
             component='div'
             id='nested-list-subheader'
           >
             {props.type.toUpperCase()}
           </ListSubheader>
         }
-        className={classes.root}
+        className={classes.list}
       >
         {data.slice(0, 3).map(data => {
           return (
@@ -186,13 +190,10 @@ const SortBar = props => {
               key={data.id}
               data-key={data.id}
               disableGutters
-              className={classes.listItem}
-              
-              
             >
-              <ListItemIcon  className={classes.icon} >{renderIcons(data)}</ListItemIcon>
+              <ListItemIcon  className={classes.list__icon} >{renderIcons(data)}</ListItemIcon>
               {/* */}
-              <ListItemText disableTypography  primary={<Typography className={classes.sortName}>{data.name}</Typography>} />
+              <ListItemText disableTypography  primary={<Typography className={classes.list__itemName}>{data.name}</Typography>} />
             </ListItem>
           );
         })}
@@ -207,8 +208,8 @@ const SortBar = props => {
                   key={data.id}
                   onClick={handleSort}
                 >
-                  <ListItemIcon className={classes.icon} >{renderIcons(data)}</ListItemIcon>
-                  <ListItemText disableTypography  primary={<Typography className={classes.sortName}>{data.name}</Typography>} />
+                  <ListItemIcon className={classes.list__icon} >{renderIcons(data)}</ListItemIcon>
+                  <ListItemText disableTypography  primary={<Typography className={classes.list__itemName}>{data.name}</Typography>} />
                 </ListItem>
               );
             })}

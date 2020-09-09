@@ -1,8 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '../../src/Link';
-import { LazyLoadImage, trackWindowScroll } from 'react-lazy-load-image-component';
-
+import {
+  LazyLoadImage,
+  trackWindowScroll,
+} from 'react-lazy-load-image-component';
 
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -10,7 +12,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
-import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { FaLinux } from 'react-icons/fa';
 import { FaPlaystation } from 'react-icons/fa';
@@ -21,6 +22,10 @@ import { FaPlay } from 'react-icons/fa';
 import { AiOutlineDoubleRight } from 'react-icons/ai';
 
 const useStyles = makeStyles(theme => ({
+  wrapper: {
+    position: 'relative',
+    height: '100%',
+  },
   card: {
     backgroundColor: '#121212',
     position: 'relative',
@@ -40,15 +45,35 @@ const useStyles = makeStyles(theme => ({
     },
     borderRadius: '10px',
   },
-  cardImage: {
+  card__image: {
     transition: 'all 0.9s ease-in-out',
     maxWidth: '100%',
     maxHeight: '100%',
     minHeight: '25em',
-    objectFit: 'cover'
+    objectFit: 'cover',
   },
-
-  cardVideo: {
+  card__imageDetail: {
+    position: 'absolute',
+    bottom: '0',
+    left: '0',
+    width: '100%',
+    opacity: '0.8',
+    backgroundColor: theme.palette.secondary.main,
+    borderBottomLeftRadius: '10px',
+    borderBottomRightRadius: '10px',
+  },
+  card__playButton: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    fontSize: '5em',
+    transform: 'translate(-50%, -50%)',
+    opacity: '0.7',
+    backgroundColor: theme.palette.secondary.main,
+    borderRadius: '50%',
+    padding: '0.2em',
+  },
+  card__video: {
     height: 'auto',
     minHeight: '20em',
     maxHeight: '30em',
@@ -56,7 +81,8 @@ const useStyles = makeStyles(theme => ({
     objectFit: 'fill',
     zIndex: '12',
   },
-  videoDetail: {
+
+  card__videoDetail: {
     height: 'auto',
     position: 'absolute',
     bottom: '0px',
@@ -68,44 +94,7 @@ const useStyles = makeStyles(theme => ({
       cursor: 'pointer',
     },
   },
-  imageDetail: {
-    position: 'absolute',
-    bottom: '0',
-    left: '0',
-    width: '100%',
-    opacity: '0.8',
-    backgroundColor: theme.palette.secondary.main,
-    borderBottomLeftRadius: '10px',
-    borderBottomRightRadius: '10px',
-  },
-  icon: {
-    color: theme.palette.green.light,
-    marginRight: '0.5em',
-    fontSize: '1.2em',
-  },
-  playButton: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    fontSize: '5em',
-    transform: 'translate(-50%, -50%)',
-    opacity: '0.7',
-    backgroundColor: theme.palette.secondary.main,
-    borderRadius: '50%',
-    padding: '0.2em',
-  },
-  details: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: '0.3em 0',
-  },
-  similarButton: {
-    backgroundColor: theme.palette.green.light,
-    padding: '0.3em',
-    marginTop: '1em',
-  },
-  fullButton: {
+  card__fullButton: {
     position: 'absolute',
     right: '-5%',
     display: 'flex',
@@ -117,7 +106,29 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.green.light,
     backgroundColor: 'rgba(18,18,18, 0.2)',
   },
-  gameName: {
+  card__playIcon: {
+    marginRight: '1em',
+  },
+
+  card__icon: {
+    color: theme.palette.green.light,
+    marginRight: '0.5em',
+    fontSize: '1.2em',
+  },
+
+  card__details: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '0.3em 0',
+  },
+  card__similarButton: {
+    backgroundColor: theme.palette.green.light,
+    padding: '0.3em',
+    marginTop: '1em',
+  },
+
+  card__gameName: {
     color: theme.palette.green.light,
     display: 'block',
     '&:hover': {
@@ -136,28 +147,23 @@ const GameCard = ({ info, scrollPosition }) => {
       info.parent_platforms.map(platform => {
         switch (platform.platform.name) {
           case 'PlayStation':
-            return <FaPlaystation key='PlayStation' className={classes.icon} />;
+            return <FaPlaystation key='PlayStation' className={classes.card__icon} />;
           case 'Xbox':
-            return <FaXbox key='Xbox' className={classes.icon} />;
+            return <FaXbox key='Xbox' className={classes.card__icon} />;
           case 'PC':
-            return <FaWindows key='PC' className={classes.icon} />;
+            return <FaWindows key='PC' className={classes.card__icon} />;
           case 'Apple Macintosh':
-            return <FaApple key='Apple Macintosh' className={classes.icon} />;
+            return <FaApple key='Apple Macintosh' className={classes.card__icon} />;
           case 'Linux':
-            return <FaLinux key='Linux' className={classes.icon} />;
+            return <FaLinux key='Linux' className={classes.card__icon} />;
         }
       }),
     [info.parent_platforms]
   );
 
-  
-  
   return (
     <React.Fragment>
-      <div
-        style={{ position: 'relative', height: '100%' }}
-        
-      >
+      <div className={classes.wrapper}>
         <Card
           className={classes.card}
           elevation={0}
@@ -172,35 +178,35 @@ const GameCard = ({ info, scrollPosition }) => {
                 loop={true}
                 elevation={0}
                 component='video'
-                className={classes.cardVideo}
+                className={classes.card__video}
                 src={info.clip.clips['640']}
               />
-              
+
               <Button
                 size='large'
                 variant='outlined'
-                className={classes.fullButton}
+                className={classes.card__fullButton}
                 href={`https://www.youtube.com/watch?v=${info.clip.video}`}
                 target='__blank'
               >
-                <FaPlay style={{ marginRight: '1em' }} fontSize='0.6rem' />
+                <FaPlay className={classes.card__playIcon} fontSize='0.6rem' />
                 <Typography variant='overline'>Full Video</Typography>
               </Button>
             </div>
           ) : (
             <div>
               <LazyLoadImage
-                className={classes.cardImage}
+                className={classes.card__image}
                 src={info.background_image}
                 effect='blur'
                 scrollPosition={scrollPosition}
-                
+                placeholderSrc={info.background_image}
               />
 
-              {info.clip && <FaPlay className={classes.playButton} />}
+              {info.clip && <FaPlay className={classes.card__playButton} />}
 
               {showVideo ? null : (
-                <CardContent className={classes.imageDetail}>
+                <CardContent className={classes.card__imageDetail}>
                   {renderIcons()}
                   <Typography variant='h6'>{info.name}</Typography>
                 </CardContent>
@@ -208,10 +214,10 @@ const GameCard = ({ info, scrollPosition }) => {
             </div>
           )}
           {showVideo && (
-            <CardContent className={classes.videoDetail}>
+            <CardContent className={classes.card__videoDetail}>
               {renderIcons()}
               <Typography
-                className={classes.gameName}
+                className={classes.card__gameName}
                 component={Link}
                 href={`/games/${[info.slug]}`}
                 variant='subtitle1'
@@ -220,12 +226,12 @@ const GameCard = ({ info, scrollPosition }) => {
                 {info.name}
               </Typography>
               <Divider />
-              <div className={classes.details}>
+              <div className={classes.card__details}>
                 <Typography variant='caption'>Release date: </Typography>
                 <Typography variant='subtitle1'>{info.released}</Typography>
               </div>
               <Divider />
-              <div className={classes.details}>
+              <div className={classes.card__details}>
                 <Typography variant='caption'>Genres: </Typography>
                 <div>
                   {info.genres.map(genre => (
@@ -247,7 +253,7 @@ const GameCard = ({ info, scrollPosition }) => {
                 fullWidth
                 endIcon={<AiOutlineDoubleRight />}
                 variant='outlined'
-                className={classes.similarButton}
+                className={classes.card__similarButton}
                 component={Link}
                 as={`/discovery/similar-to-${info.slug}`}
                 href={`/discovery/${[info.id]}`}
