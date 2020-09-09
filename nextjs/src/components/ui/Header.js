@@ -3,6 +3,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -10,7 +11,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import List from '@material-ui/core/List';
@@ -19,18 +19,24 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 
+import Snackbar from '@material-ui/core/Snackbar';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { logoutUser, uploadImage } from '../../../actions/userActions';
 
 import Link from '../../../src/Link';
+import { MenuList } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1,
   },
   menuButton: {
-    marginRight: theme.spacing(5),
+    margin: '0 0.5em 0 0.1em',
     backgroundColor: theme.palette.green.light,
     color: 'white',
     [theme.breakpoints.up('sm')]: {
@@ -38,7 +44,6 @@ const useStyles = makeStyles(theme => ({
     },
   },
   title: {
-    display: 'none',
     [theme.breakpoints.up('sm')]: {
       display: 'block',
     },
@@ -142,11 +147,18 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  user__editButton :{
+  user__editButton: {
     borderColor: '#2d3142',
-    color: '#2d3142'
-  }
+    color: '#2d3142',
+  },
+  snackbar: {
+    marginTop: '100px',
+  },
 }));
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant='filled' {...props} />;
+}
 
 function Header() {
   const CancelToken = axios.CancelToken;
@@ -154,61 +166,113 @@ function Header() {
 
   const theme = useTheme();
   const classes = useStyles();
+  const matchesXS = useMediaQuery(theme.breakpoints.down('xs'));
+
   const dispatch = useDispatch();
   const user = useSelector(state => state.user);
+  const error = useSelector(state => state.user.errors);
+
   const [search, setSearch] = React.useState('');
   const [results, setResults] = React.useState([]);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [popper, setPopper] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [alert, setAlert] = React.useState(false);
 
-  const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const anchorRef = React.useRef(null);
 
-  const handleProfileMenuOpen = event => {
-    setAnchorEl(event.currentTarget);
+  const handlePopperToggle = () => {
+    setPopper(prevOpen => !prevOpen);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
+  const handlePopperClose = event => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    setPopper(false);
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    handleMobileMenuClose();
-  };
+  function handleListKeyDown(event) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setPopper(false);
+    }
+  }
 
-  const handleMobileMenuOpen = event => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
+  // return focus to the button when we transitioned from !open -> open
+  const prevOpen = React.useRef(open);
+  React.useEffect(() => {
+    if (prevOpen.current === true && open === false) {
+      anchorRef.current.focus();
+    }
 
-  const menuId = 'primary-search-account-menu';
+    prevOpen.current = open;
+  }, [open]);
+
   const renderMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
+    <Popper
+      style={{ zIndex: '10' }}
+      open={popper}
+      anchorEl={anchorRef.current}
+      role={undefined}
+      transition
+      disablePortal
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-    </Menu>
-  );
-
-  const mobileMenuId = 'primary-search-account-menu-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-    ></Menu>
+      {({ TransitionProps, placement }) => (
+        <Grow
+          {...TransitionProps}
+          style={{
+            transformOrigin:
+              placement === 'bottom' ? 'center top' : 'center bottom',
+          }}
+        >
+          <Paper style={{ backgroundColor: theme.palette.green.light }}>
+            <ClickAwayListener onClickAway={handlePopperClose}>
+              <MenuList
+                autoFocusItem={popper}
+                id='menu-list-grow'
+                onKeyDown={handleListKeyDown}
+              >
+                <MenuItem
+                  component={Link}
+                  href='/signin'
+                  onClick={handlePopperClose}
+                >
+                  {' '}
+                  Sign{' '}
+                  <span
+                    style={{
+                      color: theme.palette.green.dark,
+                      marginLeft: '5px',
+                    }}
+                  >
+                    {' '}
+                    In
+                  </span>{' '}
+                </MenuItem>
+                <MenuItem
+                  onClick={handlePopperClose}
+                  component={Link}
+                  href='/signup'
+                >
+                  {' '}
+                  Sign{' '}
+                  <span
+                    style={{
+                      color: theme.palette.green.dark,
+                      marginLeft: '5px',
+                    }}
+                  >
+                    {' '}
+                    Up
+                  </span>
+                </MenuItem>
+              </MenuList>
+            </ClickAwayListener>
+          </Paper>
+        </Grow>
+      )}
+    </Popper>
   );
 
   //SEARCH GAME
@@ -236,8 +300,6 @@ function Header() {
     dispatch(logoutUser());
   };
 
-
-
   //CLICKAWAY LISTENER MODIFICATIONS
   const handleClick = () => {
     setOpen(prev => !prev);
@@ -248,16 +310,40 @@ function Header() {
   };
 
   //HANDLE IMAGE
-  const handleImage = (e) => {
-    const image = e.target.files[0]
-    const formData = new FormData()
+  const handleImage = e => {
+    const image = e.target.files[0];
+    const formData = new FormData();
 
-    formData.append('image', image, image.name)
-    dispatch(uploadImage(formData))
-  }
+    formData.append('image', image, image.name);
+    dispatch(uploadImage(formData));
+
+    if (error) {
+      setAlert(true);
+    }
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setAlert(false);
+  };
 
   return (
     <div className={classes.grow}>
+      {/* MUI ALERT */}
+      <Snackbar
+        className={classes.snackbar}
+        open={alert}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleClose} severity='error'>
+          {error}
+        </Alert>
+      </Snackbar>
       <AppBar
         style={{ padding: '1em 0' }}
         position='static'
@@ -265,24 +351,20 @@ function Header() {
         elevation={0}
       >
         <Toolbar disableGutters>
-          <IconButton
-            edge='start'
-            className={classes.menuButton}
-            aria-label='open drawer'
-          >
-            <MenuIcon />
-          </IconButton>
           <Button variant='text' disableRipple component={Link} href='/'>
-            <Typography className={classes.title} variant='h5' noWrap>
-              Game
+            <Typography className={classes.title} variant='h5'>
+            {matchesXS ? 'G' : 'Game'}
             </Typography>
             <Typography
               className={classes.title}
-              style={{ color: theme.palette.green.light, marginLeft: '0.2em' }}
+              style={{
+                color: theme.palette.green.light,
+                marginLeft: matchesXS ? '0':'0.2em',
+              }}
               variant='h5'
-              noWrap
+              
             >
-              Portal
+            {matchesXS ? 'P' : 'Portal'}
             </Typography>
           </Button>
 
@@ -336,10 +418,22 @@ function Header() {
               </div>
             )}
           </div>
+          {matchesXS && <IconButton
+            edge='start'
+            className={classes.menuButton}
+            aria-label='open drawer'
+            ref={anchorRef}
+            aria-controls={open ? 'menu-list-grow' : undefined}
+            aria-haspopup='true'
+            onClick={handlePopperToggle}
+          >
+            <MenuIcon />
+          </IconButton>}
+          
           <div className={classes.grow} />
           <div className={classes.sign}>
             <div className={classes.sign}>
-              {user.authenticated ? (
+              {!matchesXS && user.authenticated ? (
                 <React.Fragment>
                   <ClickAwayListener onClickAway={handleClickAway}>
                     <div className={classes.root}>
@@ -349,7 +443,7 @@ function Header() {
                         variant='text'
                         onClick={handleClick}
                       >
-                        <Avatar  src={user.imageUrl} />
+                        <Avatar src={user.imageUrl} />
                       </Button>
                       {open ? (
                         <div className={classes.dropdown}>
@@ -377,13 +471,13 @@ function Header() {
                               {user.email}
                             </Typography>
                           </div>
-                          <div style={{marginTop: '1em', textAlign: 'end'}}>
+                          <div style={{ marginTop: '1em', textAlign: 'end' }}>
                             <input
                               accept='image/*'
                               id='outlined-button-file'
                               type='file'
                               onChange={handleImage}
-                              style={{display: 'none'}}
+                              style={{ display: 'none' }}
                             />
                             <label htmlFor='outlined-button-file'>
                               <Button
@@ -420,50 +514,51 @@ function Header() {
                   </Button>
                 </React.Fragment>
               ) : (
-                <React.Fragment>
-                  <Button
-                    disableRipple
-                    size='large'
-                    variant='text'
-                    component={Link}
-                    href='/signin'
-                  >
-                    Sign{' '}
-                    <span
-                      style={{
-                        color: theme.palette.green.light,
-                        marginLeft: '5px',
-                      }}
+                !matchesXS && (
+                  <React.Fragment>
+                    <Button
+                      disableRipple
+                      size='large'
+                      variant='text'
+                      component={Link}
+                      href='/signin'
                     >
-                      {' '}
-                      In
-                    </span>{' '}
-                  </Button>
-                  <Button
-                    disableRipple
-                    size='large'
-                    variant='text'
-                    component={Link}
-                    href='/signup'
-                  >
-                    Sign{' '}
-                    <span
-                      style={{
-                        color: theme.palette.green.light,
-                        marginLeft: '5px',
-                      }}
+                      Sign{' '}
+                      <span
+                        style={{
+                          color: theme.palette.green.light,
+                          marginLeft: '5px',
+                        }}
+                      >
+                        {' '}
+                        In
+                      </span>{' '}
+                    </Button>
+                    <Button
+                      disableRipple
+                      size='large'
+                      variant='text'
+                      component={Link}
+                      href='/signup'
                     >
-                      {' '}
-                      Up
-                    </span>
-                  </Button>
-                </React.Fragment>
+                      Sign{' '}
+                      <span
+                        style={{
+                          color: theme.palette.green.light,
+                          marginLeft: '5px',
+                        }}
+                      >
+                        {' '}
+                        Up
+                      </span>
+                    </Button>
+                  </React.Fragment>
+                )
               )}
             </div>
           </div>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
       {renderMenu}
     </div>
   );

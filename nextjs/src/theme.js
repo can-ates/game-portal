@@ -103,8 +103,7 @@ const theme = createMuiTheme({
       icon: {
         color :'white'
       }
-    }
-    
+    },
   } 
 });
 

@@ -43,7 +43,12 @@ export const uploadImage = (image) => dispatch => {
   .then(() => {
     dispatch(getAuthenticatedUser())
   })
-  .catch((err) => console.log(err))
+  .catch((err) => {
+    dispatch({
+      type: types.SET_ERRORS,
+      payload: err.response.data.error,
+    });
+  })
 }
 
 export const logoutUser = () => dispatch => {
