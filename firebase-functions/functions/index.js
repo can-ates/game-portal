@@ -9,10 +9,14 @@ const {body,check} = require('express-validator')
 
 const {
   signup,
-  login,
+  signin,
   uploadImage,
   getAuthenticatedUser
 } = require('./handlers/users');
+
+const {
+  addComment
+} = require('./handlers/games');
 
 
 // users routes
@@ -25,15 +29,15 @@ app.post('/signup', [
   body('handle').exists().withMessage('You should provide a handle')
 
 ], signup);
-app.post('/login',[
+app.post('/signin',[
   body('email').exists().withMessage('Email required').bail().isEmail().withMessage('Not a valid email').normalizeEmail(),
   body('password').exists().withMessage('Password required'),
-] ,login);
+] ,signin);
 app.post('/user/image' ,auth,uploadImage);
-// app.post('/user', FBAuth, addUserDetails);
 app.get('/user', auth, getAuthenticatedUser);
-// app.get('/user/:handle', getUserDetails);
-// app.post('/notifications', FBAuth, markNotificationsRead);
+
+//games routes
+app.post('/games/:slug', auth, addComment)
 
 exports.api = functions.region('europe-west1').https.onRequest(app)
 
