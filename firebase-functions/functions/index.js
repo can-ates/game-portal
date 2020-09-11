@@ -15,7 +15,8 @@ const {
 } = require('./handlers/users');
 
 const {
-  addComment
+  addComment,
+  getComments
 } = require('./handlers/games');
 
 
@@ -38,6 +39,7 @@ app.get('/user', auth, getAuthenticatedUser);
 
 //games routes
 app.post('/games/:slug', auth, addComment)
+app.get('/games/:slug', getComments)
 
 exports.api = functions.region('europe-west1').https.onRequest(app)
 
