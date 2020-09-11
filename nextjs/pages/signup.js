@@ -76,25 +76,6 @@ const useStyles = makeStyles(theme => ({
       cursor: 'pointer',
     },
   },
-
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '50ch',
-    },
-    '&:focus': {
-      '&::placeholder': {
-        opacity: '0',
-      },
-    },
-    '&::placeholder': {
-      color: 'white',
-      opacity: '0.6',
-    },
-  },
   signup__submit: {
     '&:not([disabled])': {
       backgroundColor: theme.palette.green.dark,

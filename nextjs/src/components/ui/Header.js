@@ -134,14 +134,25 @@ const useStyles = makeStyles(theme => ({
   },
   dropdown: {
     position: 'absolute',
-    top: 55,
+    top: 70,
     right: 0,
-    left: '-5.7em',
+    left: '-6em',
     zIndex: 1,
     width: '15em',
     borderRadius: '10px',
     padding: theme.spacing(2),
     backgroundColor: theme.palette.green.light,
+    '&::before' :{
+      content: "''",
+      position: 'absolute',
+      top : '-2px',
+      left: '50%',
+      height: '20px',
+      width: '20px',
+      transform: 'rotate(45deg)',
+      zIndex: '35000',
+      backgroundColor: theme.palette.green.light
+    }
   },
   detail: {
     display: 'flex',
@@ -154,6 +165,22 @@ const useStyles = makeStyles(theme => ({
   snackbar: {
     marginTop: '100px',
   },
+  popper:{
+    zIndex: '10',
+    marginTop : '1em',
+    position: 'relative',
+    '&::before' :{
+      content: "''",
+      position: 'absolute',
+      top : '-2px',
+      left: '40%',
+      height: '20px',
+      width: '20px',
+      transform: 'rotate(45deg)',
+      zIndex: '35000',
+      backgroundColor: theme.palette.green.light
+    }
+  }
 }));
 
 function Alert(props) {
@@ -203,7 +230,7 @@ function Header() {
   const prevOpen = React.useRef(open);
   React.useEffect(() => {
     if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
+      anchorRef.current?.focus();
     }
 
     prevOpen.current = open;
@@ -211,7 +238,7 @@ function Header() {
 
   const renderMenu = (
     <Popper
-      style={{ zIndex: '10' }}
+      className={classes.popper}
       open={popper}
       anchorEl={anchorRef.current}
       role={undefined}

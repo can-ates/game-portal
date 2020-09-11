@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import axios from 'axios';
+import React, { useRef, useEffect, useState } from 'react';
+import axios from 'axios'
 import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -36,6 +36,10 @@ import { TiWorld } from 'react-icons/ti';
 import { FaReddit } from 'react-icons/fa';
 import { AiFillMediumCircle } from 'react-icons/ai';
 
+import CommentForm from '../../src/components/CommentForm';
+import Comment from '../../src/components/Comment'
+import {instance} from '../../src/utils/axios'
+
 const useStyles = makeStyles(theme => ({
   background: {
     position: 'absolute',
@@ -60,7 +64,7 @@ const useStyles = makeStyles(theme => ({
     backgroundImage: 'linear-gradient(180deg, transparent, #2D3142);',
   },
   wrapper: {
-    padding: '8em 10em',
+    padding: '8em 10em 2em 10em',
     [theme.breakpoints.down('sm')]: {
       padding: '1em 2em',
     },
@@ -121,7 +125,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '4em',
   },
   rightColumn__metascore: {
-    minWidth: '9em',
+    maxWidth: '10em',
     [theme.breakpoints.down('sm')]: {
       width: '13em',
     },
@@ -217,7 +221,17 @@ function Game({ game, images, videos, scrollPosition }) {
   const classes = useStyles();
   const router = useRouter();
   const theme = useTheme();
+  const [comments ,setComments] = useState([])
   const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
+
+  useEffect(() => {
+    instance
+    .get(`/games/${game.slug}`)
+    .then(res => {
+      if(!res.data.general) setComments(res.data)
+      
+    })
+  }, [])
 
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -346,6 +360,15 @@ function Game({ game, images, videos, scrollPosition }) {
         return;
     }
   };
+
+  const handleComment = (values) => {
+    instance.post(`/games/${game.slug}`, {
+      title: values.title,
+      body: values.body
+    }).then(res => {
+
+    })
+  }
 
   return (
     <React.Fragment>
@@ -609,6 +632,26 @@ function Game({ game, images, videos, scrollPosition }) {
               />
             ))}
           </Slider>
+        </Grid>
+      </Grid>
+      <Grid item container direction='column' >
+        <Grid item  >
+          <CommentForm
+              handleComment={handleComment}
+          />
+        </Grid>
+        <Grid item >
+              {comments.length > 0 ? comments.map(comment => (
+                <Comment
+                
+                key={comment.createdAt}
+                body={comment.body}
+                handle={comment.handle}
+                title={comment.title}
+                image={comment.image}
+                createdAt={comment.createdAt}
+                /> 
+              )) : <Typography variant='h3' align='center' >Nobody commented yet</Typography>   }
         </Grid>
       </Grid>
     </React.Fragment>
