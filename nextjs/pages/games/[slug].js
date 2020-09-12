@@ -1,5 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
-import axios from 'axios'
+import React, { useRef, useCallback, useState } from 'react';
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -37,8 +37,8 @@ import { FaReddit } from 'react-icons/fa';
 import { AiFillMediumCircle } from 'react-icons/ai';
 
 import CommentForm from '../../src/components/CommentForm';
-import Comment from '../../src/components/Comment'
-import {instance} from '../../src/utils/axios'
+import Comment from '../../src/components/Comment';
+import { instance } from '../../src/utils/axios';
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -217,25 +217,13 @@ function SamplePrevArrow(props) {
 }
 
 function Game({ game, images, videos, scrollPosition }) {
+  const observer = useRef();
   const description = useRef();
   const classes = useStyles();
   const router = useRouter();
   const theme = useTheme();
-  const [comments ,setComments] = useState([])
+  const [comments, setComments] = useState([]);
   const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
-
-  useEffect(() => {
-    instance
-    .get(`/games/${game.slug}`)
-    .then(res => {
-      if(!res.data.general) setComments(res.data)
-      
-    })
-  }, [])
-
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
 
   const settings = {
     infinite: true,
@@ -361,13 +349,34 @@ function Game({ game, images, videos, scrollPosition }) {
     }
   };
 
-  const handleComment = (values) => {
+  const fetchComments = useCallback(
+    
+    node => {
+      
+      observer.current = new IntersectionObserver(entries => {
+        console.log('3')
+        if (entries[0].isIntersecting) {
+          console.log('4')
+          instance.get(`/games/${game.slug}`).then(res => {
+            if (!res.data.general) setComments(res.data);
+            observer.current.disconnect()
+          });
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    []
+  );
+
+  const handleComment = values => {
     instance.post(`/games/${game.slug}`, {
       title: values.title,
-      body: values.body
-    }).then(res => {
+      body: values.body,
+    });
+  };
 
-    })
+  if (router.isFallback) {
+    return <div>Loading...</div>;
   }
 
   return (
@@ -634,24 +643,27 @@ function Game({ game, images, videos, scrollPosition }) {
           </Slider>
         </Grid>
       </Grid>
-      <Grid item container direction='column' >
-        <Grid item  >
-          <CommentForm
-              handleComment={handleComment}
-          />
+      <Grid item container direction='column'>
+        <Grid item ref={fetchComments}>
+          <CommentForm  handleComment={handleComment} />
         </Grid>
-        <Grid item >
-              {comments.length > 0 ? comments.map(comment => (
-                <Comment
-                
+        <Grid item>
+          {comments.length > 0 ? (
+            comments.map(comment => (
+              <Comment
                 key={comment.createdAt}
                 body={comment.body}
                 handle={comment.handle}
                 title={comment.title}
                 image={comment.image}
                 createdAt={comment.createdAt}
-                /> 
-              )) : <Typography variant='h3' align='center' >Nobody commented yet</Typography>   }
+              />
+            ))
+          ) : (
+            <Typography variant='h3' align='center'>
+              Nobody commented yet
+            </Typography>
+          )}
         </Grid>
       </Grid>
     </React.Fragment>

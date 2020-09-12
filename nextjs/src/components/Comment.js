@@ -1,5 +1,5 @@
-import React from 'react';
-import axios from 'axios';
+import React, {useEffect} from 'react';
+import {instance} from '../utils/axios'
 
 import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
@@ -50,6 +50,8 @@ const useStyles = makeStyles(theme => ({
 const Comment = ({ handle, image, createdAt, body, title }) => {
   const classes = useStyles();
   const theme = useTheme();
+
+  
 
   return (
     <React.Fragment>
