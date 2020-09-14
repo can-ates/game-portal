@@ -9,14 +9,13 @@ import Header from '../src/components/ui/Header';
 import { Provider } from 'react-redux';
 import jwtDecode from 'jwt-decode';
 import { useStore, initializeStore } from '../store';
-import {instance} from '../src/utils/axios';
+import { instance } from '../src/utils/axios';
 import { logoutUser, getAuthenticatedUser } from '../actions/userActions';
 import * as types from '../actions/types';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'react-circular-progressbar/dist/styles.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
 
 if (typeof window !== 'undefined') {
   const token = localStorage.idToken;
@@ -48,11 +47,9 @@ export default function MyApp(props) {
   return (
     <React.Fragment>
       <Head>
-        <title>Game Portal</title>
-        <meta
-          name='viewport'
-          content='minimum-scale=1, initial-scale=1, width=device-width'
-        />
+        <title >
+          The Largest Video Game Discovery Service | Game Portal
+        </title>
       </Head>
       <ThemeProvider theme={theme}>
         <Provider store={store}>

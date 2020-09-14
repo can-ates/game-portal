@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import Link from '../src/Link';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -132,6 +133,21 @@ const Signup = props => {
 
   return (
     <React.Fragment>
+      <Head>
+        <title key='title'>
+          The Largest Video Game Discovery Service | Game Portal
+        </title>
+        <meta
+          name='description'
+          key='description'
+          content='Game Portal | Discover new video games and see what other people talk about them. Join Game Portal Now!'
+        />
+        <meta
+        key='og:title'
+        property='og:title'
+        content='Game Portal | Discover new video games and see what other people talk about them. Join Game Portal Now!'
+        />
+      </Head>
       <div className={classes.background} />
       <Snackbar
         className={classes.snackbar}

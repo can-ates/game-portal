@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSWRInfinite } from 'swr';
 import axios from 'axios';
 import dynamic from 'next/dynamic';
+import Head from 'next/head';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -116,12 +117,33 @@ function Index(props) {
 
   return (
     <div style={{ margin: '2em 0', padding: '0 10 0 10' }}>
+    {/* TODO og:url */}
+      <Head>
+        <title key='title'>
+          The Largest Video Game Discovery Service | Game Portal
+        </title>
+        <meta
+          name='description'
+          key='description'
+          content='Game Portal | Discover new video games and see what other people talk about them. Join Game Portal Now!'
+        />
+        <meta
+          key='og:title'
+          property='og:title'
+          content='Game Portal | Discover new video games and see what other people talk about them. Join Game Portal Now!'
+        />
+        <meta property='og:url' />
+      </Head>
+
       <Grid container direction='column'>
         <Grid item container direction='row' justify='space-between'>
           <Grid item>
             <Typography
               align={matchesSM ? 'center' : 'left'}
-              style={{ marginBottom: '1.250em', fontSize: matchesSM && '1.5rem' }}
+              style={{
+                marginBottom: '1.250em',
+                fontSize: matchesSM && '1.5rem',
+              }}
               variant='h1'
             >
               {title}

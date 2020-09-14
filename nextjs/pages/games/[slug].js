@@ -8,6 +8,7 @@ import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Link from '../../src/Link';
+import Head from 'next/head';
 import Slider from 'react-slick';
 import {
   LazyLoadImage,
@@ -49,6 +50,7 @@ const useStyles = makeStyles(theme => ({
     minHeight: '60%',
     zIndex: '-5',
     minWidth: '100%',
+    backgroundPosition: 'center',
     backgroundSize: 'cover',
     opacity: '0.2',
   },
@@ -349,25 +351,6 @@ function Game({ game, images, videos, scrollPosition }) {
     }
   };
 
-  const fetchComments = useCallback(
-    
-    node => {
-      
-      observer.current = new IntersectionObserver(entries => {
-        console.log('3')
-        if (entries[0].isIntersecting) {
-          console.log('4')
-          instance.get(`/games/${game.slug}`).then(res => {
-            if (!res.data.general) setComments(res.data);
-            observer.current.disconnect()
-          });
-        }
-      });
-      if (node) observer.current.observe(node);
-    },
-    []
-  );
-
   const handleComment = values => {
     instance.post(`/games/${game.slug}`, {
       title: values.title,
@@ -379,8 +362,45 @@ function Game({ game, images, videos, scrollPosition }) {
     return <div>Loading...</div>;
   }
 
+  const fetchComments = node => {
+    observer.current = new IntersectionObserver(entries => {
+      console.log('3');
+      if (entries[0].isIntersecting) {
+        console.log('4');
+        instance.get(`/games/${game.slug}`).then(res => {
+          if (!res.data.general) setComments(res.data);
+          observer.current.disconnect();
+        });
+      }
+    });
+    if (node) observer.current.observe(node);
+  };
+
   return (
     <React.Fragment>
+      <Head>
+        <title key='title'>
+          {game.name} - description, videos, screenshots | Game Portal
+        </title>
+        <meta
+          name='description'
+          key='description'
+          content={`Game Portal | Description, videos, screenshots, release date, ${
+            game.website && 'website'
+          }, ${game.reddit_url && 'reddit'}, ${
+            game.metacritic_url && 'metacritic'
+          } of ${game.name}`}
+        />
+        <meta
+          key='og:title'
+          property='og:title'
+          content={`Game Portal | Description, videos, screenshots, release date, ${
+            game.website && 'website'
+          }, ${game.reddit_url && 'reddit'}, ${
+            game.metacritic_url && 'metacritic'
+          } of ${game.name}`}
+        />
+      </Head>
       <div
         style={{ backgroundImage: `url(${game.background_image})` }}
         className={classes.background}
@@ -645,7 +665,7 @@ function Game({ game, images, videos, scrollPosition }) {
       </Grid>
       <Grid item container direction='column'>
         <Grid item ref={fetchComments}>
-          <CommentForm  handleComment={handleComment} />
+          <CommentForm handleComment={handleComment} />
         </Grid>
         <Grid item>
           {comments.length > 0 ? (

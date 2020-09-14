@@ -10,6 +10,7 @@
     "clsx": "latest",
     "dayjs": "^1.8.34",
     "formik": "^2.1.5",
+    "fs-extra": "^9.0.1",
     "jwt-decode": "^2.2.0",
     "next": "latest",
     "prop-types": "latest",
@@ -31,6 +32,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
+    "postbuild": "node scripts/sitemap.js",
     "post-update": "echo \"codesandbox preview only, need an update\" && yarn upgrade --latest"
   }
 }
