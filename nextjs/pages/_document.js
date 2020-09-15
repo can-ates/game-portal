@@ -11,10 +11,7 @@ export default class MyDocument extends Document {
         <Head>
           {/* PWA primary color */}
           <link rel='shortcut icon' href='/gp.png' />
-          <meta
-            name='viewport'
-            content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no'
-          />
+         
           <meta property='og:type' content='website' />
           <meta property='og:image' content="https://imgur.com/a/eeBSSky"/>
           <meta property='og:image:type' content="image/png"/>

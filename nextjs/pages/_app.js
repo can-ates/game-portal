@@ -47,9 +47,11 @@ export default function MyApp(props) {
   return (
     <React.Fragment>
       <Head>
-        <title >
-          The Largest Video Game Discovery Service | Game Portal
-        </title>
+        <title>The Largest Video Game Discovery Service | Game Portal</title>
+        <meta
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no'
+        />
       </Head>
       <ThemeProvider theme={theme}>
         <Provider store={store}>

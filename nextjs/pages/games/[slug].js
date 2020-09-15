@@ -1,6 +1,7 @@
 import React, { useRef, useCallback, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import dayjs from 'dayjs';
 const relativeTime = require('dayjs/plugin/relativeTime');
 dayjs.extend(relativeTime);
@@ -40,6 +41,8 @@ import { AiFillMediumCircle } from 'react-icons/ai';
 import CommentForm from '../../src/components/CommentForm';
 import Comment from '../../src/components/Comment';
 import { instance } from '../../src/utils/axios';
+
+const Skeleton = dynamic(() => import('@material-ui/lab/Skeleton'));
 
 const useStyles = makeStyles(theme => ({
   background: {
@@ -359,7 +362,168 @@ function Game({ game, images, videos, scrollPosition }) {
   };
 
   if (router.isFallback) {
-    return <div>Loading...</div>;
+    return (
+      <div className={classes.wrapper}>
+        <Grid container direction='column'>
+          <Grid item container direction='row' spacing={4}>
+            {/* LEFT COLUMN */}
+            <Grid item sm={3} xs={12} className={classes.leftColumn}>
+              <Grid container direction='column'>
+                <Grid item>
+                  <Skeleton
+                    animation='pulse'
+                    variant='rect'
+                    height='20em'
+                   
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+            {/* CENTER COLUMN */}
+            <Grid item sm={6} xs={12} className={classes.centerColumn}>
+              <Grid container direction='column'>
+                {/* TITLE */}
+                <Grid item>
+                  <Skeleton
+                    animation='pulse'
+                    variant='rect'
+                    width='100%'
+                    height='3rem'
+                  />
+                </Grid>
+                {/* DATE */}
+                <Grid item className={classes.centerColumn__date}>
+                  <Skeleton
+                    animation='pulse'
+                    variant='rect'
+                    width='100%'
+                    height='1.5rem'
+                  />
+                </Grid>
+                {/* PUBLISHERS */}
+                <Grid item>
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton
+                      key={i}
+                      animation='pulse'
+                      variant='rect'
+                      width='100%'
+                      height='1rem'
+                    />
+                  ))}
+                </Grid>
+                <Grid item className={classes.centerColumn__aboutTitle}>
+                  <Skeleton
+                    animation='pulse'
+                    variant='rect'
+                    width='100%'
+                    height='1rem'
+                  />
+                </Grid>
+                {/* GENRE */}
+                <Grid item className={classes.centerColumn__genreTitle}>
+                  <Skeleton
+                    animation='pulse'
+                    variant='rect'
+                    width='100%'
+                    height='1rem'
+                  />
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton
+                      key={i}
+                      animation='pulse'
+                      variant='rect'
+                      width='100%'
+                      height='0.9rem'
+                    />
+                  ))}
+                </Grid>
+                {/* PLATFORMS */}
+                <Grid item>
+                  <Skeleton
+                    animation='pulse'
+                    variant='rect'
+                    width='100%'
+                    height='1rem'
+                  />
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton
+                      key={i}
+                      animation='pulse'
+                      variant='rect'
+                      width='100%'
+                      height='0.9rem'
+                    />
+                  ))}
+                </Grid>
+                {/* STORES */}
+                <Grid item>
+                  <Skeleton
+                    animation='pulse'
+                    variant='rect'
+                    width='100%'
+                    height='1rem'
+                  />
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton
+                      key={i}
+                      animation='pulse'
+                      variant='rect'
+                      width='100%'
+                      height='0.9rem'
+                    />
+                  ))}
+                </Grid>
+                {/* DESCRIPTION*/}
+                <Grid item className={classes.centerColumn__description}>
+                  <Skeleton
+                    animation='pulse'
+                    variant='rect'
+                    width='100%'
+                    height='1rem'
+                  />
+                </Grid>
+              </Grid>
+            </Grid>
+            {/* RIGHT COLUMN */}
+            <Grid item sm={3} xs={12} className={classes.rightColumn}>
+              <Grid container direction='column'>
+                {/* METASCORE */}
+                <Grid item className={classes.rightColumn__title}>
+                  <Skeleton
+                    animation='pulse'
+                    variant='rect'
+                    width='100%'
+                    height='1rem'
+                  />
+                  <div className={classes.rightColumn__metascore}>
+                    <Skeleton
+                      animation='pulse'
+                      variant='rect'
+                      width='100%'
+                      height='10em'
+                      style={{marginTop: '1em'}}
+                    />
+                  </div>
+                </Grid>
+                {/* TAGS */}
+                <Grid item align='center'>
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Skeleton
+                    key={i}
+                    animation='pulse'
+                    variant='rect'
+                    width='100%'
+                    height='3em'
+                  />
+                ))}
+                </Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </div>
+    );
   }
 
   const fetchComments = node => {

@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import useSWR from 'swr';
 import axios from 'axios';
+import dynamic from 'next/dynamic';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -27,6 +28,8 @@ import { SiEpicgames } from 'react-icons/si';
 import { SiItchDotIo } from 'react-icons/si';
 import { Typography } from '@material-ui/core';
 
+const Skeleton = dynamic(() => import('@material-ui/lab/Skeleton'));
+
 const useStyles = makeStyles(theme => ({
   formControl: {
     margin: theme.spacing(1),
@@ -37,9 +40,9 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 360,
     backgroundColor: 'transparent',
   },
-  list__subheader :{
+  list__subheader: {
     [theme.breakpoints.down('sm')]: {
-      fontSize: '1.0rem'
+      fontSize: '1.0rem',
     },
     fontSize: '1.5rem',
     color: theme.palette.green.light,
@@ -55,7 +58,6 @@ const useStyles = makeStyles(theme => ({
     fontSize: '1.0rem',
     [theme.breakpoints.down('sm')]: {
       fontSize: '0.75rem',
-      
     },
   },
   list__avatar: {
@@ -63,16 +65,15 @@ const useStyles = makeStyles(theme => ({
     width: '3em',
     borderRadius: '10px',
     marginLeft: 'auto',
-    
   },
-  list__itemName : {
+  list__itemName: {
     [theme.breakpoints.down('sm')]: {
-      fontSize: '0.85rem'
+      fontSize: '0.85rem',
     },
     [theme.breakpoints.down('xs')]: {
-      fontSize: '0.75rem'
+      fontSize: '0.75rem',
     },
-  }
+  },
 }));
 
 const fetcher = url => axios.get(url).then(res => res.data.results);
@@ -81,7 +82,7 @@ const SortBar = props => {
   const [open, setOpen] = useState(false);
   const classes = useStyles();
   const theme = useTheme();
-  const matchesSM = useMediaQuery(theme.breakpoints.down('sm'))
+  const matchesSM = useMediaQuery(theme.breakpoints.down('sm'));
 
   const { data, error } = useSWR(
     `https://api.rawg.io/api/${props.type}?page_size=${props.size}`,
@@ -89,7 +90,24 @@ const SortBar = props => {
   );
 
   if (error) return <div>failed to load</div>;
-  if (!data) return <div>loading...</div>;
+  if (!data)
+    return (
+      <div className={classes.list}>
+        <Typography className={classes.list__subheader}>
+          {props.type.toUpperCase()}
+        </Typography>
+        {Array.from({ length: 3 }).map((_, i) => (
+          <Skeleton
+            key={i}
+            animation='pulse'
+            variant='rect'
+            width={matchesSM ? 100 : 150}
+            height={matchesSM ? 40 : 55}
+            style={{ borderRadius: '5px',marginBottom: '0.5em' }}
+          />
+        ))}
+      </div>
+    );
 
   const handleSort = event => {
     // props.handleSorting(e.target.value)
@@ -117,34 +135,38 @@ const SortBar = props => {
       case 'PlayStation 2':
       case 'PS Vita':
       case 'PSP':
-        return <FaPlaystation  key='PlayStation' style={{fontSize: '1.5rem'}} />;
+        return (
+          <FaPlaystation key='PlayStation' style={{ fontSize: '1.5rem' }} />
+        );
       case 'Xbox':
       case 'Xbox Store':
       case 'Xbox 360 Store':
       case 'Xbox One':
       case 'Xbox Series X':
       case 'Xbox 360':
-        return <FaXbox key={info.name} style={{fontSize: '1.5rem'}} />;
+        return <FaXbox key={info.name} style={{ fontSize: '1.5rem' }} />;
       case 'PC':
-        return <FaWindows key={info.name} style={{fontSize: '1.5rem'}} />;
+        return <FaWindows key={info.name} style={{ fontSize: '1.5rem' }} />;
       case 'Steam':
-        return <FaSteam key={info.name} style={{fontSize: '1.5rem'}} />;
+        return <FaSteam key={info.name} style={{ fontSize: '1.5rem' }} />;
       case 'Epic Games':
-        return <SiEpicgames key={info.name} style={{fontSize: '1.5rem'}} />;
+        return <SiEpicgames key={info.name} style={{ fontSize: '1.5rem' }} />;
       case 'GOG':
-        return <SiGroupon key={info.name} style={{fontSize: '1.5rem'}} />;
+        return <SiGroupon key={info.name} style={{ fontSize: '1.5rem' }} />;
       case 'Nintendo Switch':
       case 'Nintendo Store':
-        return <SiNintendoswitch key={info.name} style={{fontSize: '1.5rem'}} />;
+        return (
+          <SiNintendoswitch key={info.name} style={{ fontSize: '1.5rem' }} />
+        );
       case 'Nintendo DS':
       case 'Nintendo 3DS':
       case 'Nintendo DSi':
-        return <SiNintendo3Ds key={info.name}  style={{fontSize: '1.5rem'}}/>;
+        return <SiNintendo3Ds key={info.name} style={{ fontSize: '1.5rem' }} />;
       case 'Apple Macintosh':
       case 'iOS':
       case 'macOS':
       case 'App Store':
-        return <FaApple key={info.name} style={{fontSize: '1.5rem'}} />;
+        return <FaApple key={info.name} style={{ fontSize: '1.5rem' }} />;
       case 'Android':
       case 'Google Play':
         return <SiAndroid key={info.name} />;
@@ -158,7 +180,6 @@ const SortBar = props => {
             className={classes.list__avatar}
             src={info.image_background}
             effect='blur'
-           
           />
         );
     }
@@ -191,9 +212,18 @@ const SortBar = props => {
               data-key={data.id}
               disableGutters
             >
-              <ListItemIcon  className={classes.list__icon} >{renderIcons(data)}</ListItemIcon>
+              <ListItemIcon className={classes.list__icon}>
+                {renderIcons(data)}
+              </ListItemIcon>
               {/* */}
-              <ListItemText disableTypography  primary={<Typography className={classes.list__itemName}>{data.name}</Typography>} />
+              <ListItemText
+                disableTypography
+                primary={
+                  <Typography className={classes.list__itemName}>
+                    {data.name}
+                  </Typography>
+                }
+              />
             </ListItem>
           );
         })}
@@ -208,8 +238,17 @@ const SortBar = props => {
                   key={data.id}
                   onClick={handleSort}
                 >
-                  <ListItemIcon className={classes.list__icon} >{renderIcons(data)}</ListItemIcon>
-                  <ListItemText disableTypography  primary={<Typography className={classes.list__itemName}>{data.name}</Typography>} />
+                  <ListItemIcon className={classes.list__icon}>
+                    {renderIcons(data)}
+                  </ListItemIcon>
+                  <ListItemText
+                    disableTypography
+                    primary={
+                      <Typography className={classes.list__itemName}>
+                        {data.name}
+                      </Typography>
+                    }
+                  />
                 </ListItem>
               );
             })}
