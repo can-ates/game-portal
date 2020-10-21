@@ -24,35 +24,36 @@ import { signUpUser } from '../actions/userActions';
 
 const useStyles = makeStyles(theme => ({
   background: {
-    background: 'url(Sun-Tornado.svg) no-repeat center center fixed',
+    background: 'url(Rainbow-Vortex.svg) no-repeat center center fixed',
     position: 'absolute',
     top: '0',
     left: '0',
     right: '0',
+    bottom: '0',
     backgroundSize: 'cover',
     zIndex: '-5',
     minHeight: '100%',
     minWidth: '100%',
-    width: 'auto',
-    height: 'auto',
+
     opacity: '0.4',
+  },
+  signup_wrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '25px',
+    height: '100%',
   },
   snackbar: {
     marginTop: '100px',
   },
   signup: {
     backgroundColor: 'transparent',
-    border: `1px solid ${theme.palette.green.dark}`,
+    border: `1px solid white`,
     width: 'auto',
     maxWidth: '25em',
     minWidth: '15em',
     borderRadius: '10px',
-    height: 'auto',
-    position: 'relative',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    overflow: 'auto',
   },
   signup__title: {
     marginTop: '2em',
@@ -143,9 +144,9 @@ const Signup = props => {
           content='Game Portal | Discover new video games and see what other people talk about them. Join Game Portal Now!'
         />
         <meta
-        key='og:title'
-        property='og:title'
-        content='Game Portal | Discover new video games and see what other people talk about them. Join Game Portal Now!'
+          key='og:title'
+          property='og:title'
+          content='Game Portal | Discover new video games and see what other people talk about them. Join Game Portal Now!'
         />
       </Head>
       <div className={classes.background} />
@@ -160,7 +161,7 @@ const Signup = props => {
           {error}
         </Alert>
       </Snackbar>
-      <div style={{ height: 'calc(100vh - 100px)' }}>
+      <div className={classes.signup_wrapper}>
         <div className={classes.signup}>
           <Grid container direction='column' align='center'>
             <Grid item>

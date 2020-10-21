@@ -53,9 +53,10 @@ const useStyles = makeStyles(theme => ({
     minHeight: '60%',
     zIndex: '-5',
     minWidth: '100%',
-    backgroundPosition: 'center',
+    backgroundPosition: 'center top',
     backgroundSize: 'cover',
-    opacity: '0.2',
+
+    opacity: '0.3',
   },
   imageShadow: {
     position: 'absolute',
@@ -66,7 +67,7 @@ const useStyles = makeStyles(theme => ({
     // '&::-webkit-box-shadow': '-1px 61px 75px 28px rgba(45,49,66,1)',
     // '&::-moz-box-shadow': '-1px 61px 75px 28px rgba(45,49,66,1)',
     // boxShadow: '-1px 61px 75px 28px rgba(45,49,66,1)',
-    backgroundImage: 'linear-gradient(180deg, transparent, #2D3142);',
+    backgroundImage: 'linear-gradient(180deg, transparent, #71b280);',
   },
   wrapper: {
     padding: '8em 10em 2em 10em',
@@ -95,10 +96,12 @@ const useStyles = makeStyles(theme => ({
   },
   centerColumn__genreTitle: {
     marginTop: '1em',
+  
   },
   centerColumn__about: {
     marginLeft: '1em',
     color: theme.palette.green.light,
+    wordBreak: 'break-word'
   },
   centerColumn__icon: {
     marginLeft: '1em',
@@ -143,6 +146,7 @@ const useStyles = makeStyles(theme => ({
     opacity: '0.7',
     marginRight: '1em',
     display: 'inline-block',
+    color: 'white'
   },
   slider: {
     padding: '1em',
@@ -827,7 +831,7 @@ function Game({ game, images, videos, scrollPosition }) {
           </Slider>
         </Grid>
       </Grid>
-      <Grid item container direction='column'>
+      <Grid item container direction='column' style={{marginBottom: '2em'}}>
         <Grid item ref={fetchComments}>
           <CommentForm handleComment={handleComment} />
         </Grid>
@@ -851,6 +855,7 @@ function Game({ game, images, videos, scrollPosition }) {
         </Grid>
       </Grid>
     </React.Fragment>
+    
   );
 }
 

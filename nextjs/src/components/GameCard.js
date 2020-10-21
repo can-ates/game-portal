@@ -29,16 +29,15 @@ const useStyles = makeStyles(theme => ({
   card: {
     backgroundColor: '#121212',
     position: 'relative',
-    height: 'auto',
-    width: 'auto',
-    maxWidth: '100%',
-    maxHeight: '100%',
-    transition: 'all 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
+    height: '25em',
+    width: '100%',
+    
+    transition: 'transform 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
         position: 'absolute',
         transform: 'scale(1.15)',
-        minHeight: '33em',
+        height: '33em',
         zIndex: '100',
         backgroundColor: 'rgba(18,18,18, 0.8)',
       },
@@ -74,19 +73,18 @@ const useStyles = makeStyles(theme => ({
     padding: '0.2em',
   },
   card__video: {
-    height: 'auto',
-    minHeight: '20em',
-    maxHeight: '30em',
+    height: '20em',
     width: '100%',
     objectFit: 'fill',
     zIndex: '12',
   },
 
   card__videoDetail: {
-    height: 'auto',
     position: 'absolute',
+    left: '0px',
     bottom: '0px',
     zIndex: '1000',
+    backgroundColor: 'rgba(18,18,18, 0.8)',
     width: '100%',
     borderBottomLeftRadius: '10px',
     borderBottomRightRadius: '10px',
@@ -140,6 +138,7 @@ const useStyles = makeStyles(theme => ({
 
 const GameCard = ({ info, scrollPosition }) => {
   const [showVideo, setShowVideo] = useState(false);
+  
   const classes = useStyles();
 
   const renderIcons = useCallback(
@@ -161,17 +160,19 @@ const GameCard = ({ info, scrollPosition }) => {
     [info.parent_platforms]
   );
 
+
   return (
     <React.Fragment>
       <div className={classes.wrapper}>
         <Card
           className={classes.card}
           elevation={0}
-          onMouseLeave={() => showVideo && setShowVideo(false)}
-          onMouseOver={() => !showVideo && setShowVideo(true)}
+          onMouseLeave={() => setShowVideo(false)}
+          
+         
         >
           {showVideo && info.clip ? (
-            <div>
+            <React.Fragment>
               <CardMedia
                 muted={true}
                 autoPlay={true}
@@ -192,15 +193,15 @@ const GameCard = ({ info, scrollPosition }) => {
                 <FaPlay className={classes.card__playIcon} fontSize='0.6rem' />
                 <Typography variant='overline'>Full Video</Typography>
               </Button>
-            </div>
+            </React.Fragment>
           ) : (
-            <div>
+            <React.Fragment>
               <LazyLoadImage
                 className={classes.card__image}
                 src={info.background_image}
                 effect='blur'
                 scrollPosition={scrollPosition}
-                placeholderSrc={info.background_image}
+                onMouseOver={() => setShowVideo(true)}
               />
 
               {info.clip && <FaPlay className={classes.card__playButton} />}
@@ -211,7 +212,7 @@ const GameCard = ({ info, scrollPosition }) => {
                   <Typography variant='h6'>{info.name}</Typography>
                 </CardContent>
               )}
-            </div>
+            </React.Fragment>
           )}
           {showVideo && (
             <CardContent className={classes.card__videoDetail}>

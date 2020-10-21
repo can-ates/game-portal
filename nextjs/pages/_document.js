@@ -25,7 +25,7 @@ export default class MyDocument extends Document {
         </Head>
         <body
           style={{
-            backgroundColor: '#2d3142',
+            background: 'linear-gradient(to right, #134e5e, #71b280)',
             margin: '0',
             padding: '0',
             boxSizing: 'border-box',

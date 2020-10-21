@@ -23,35 +23,36 @@ import { signInUser } from '../actions/userActions';
 
 const useStyles = makeStyles(theme => ({
   background: {
-    background: 'url(Sun-Tornado.svg) no-repeat center center fixed',
+    background: 'url(Rainbow-Vortex.svg) no-repeat center center fixed',
     position: 'absolute',
     top: '0',
     left: '0',
     right: '0',
+    bottom: '0',
     backgroundSize: 'cover',
     zIndex: '-5',
     minHeight: '100%',
     minWidth: '100%',
-    width: 'auto',
-    height: 'auto',
+
     opacity: '0.4',
+  },
+  signin_wrapper: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '100px',
+    height: '100%',
   },
   snackbar: {
     marginTop: '100px',
   },
   signin: {
     backgroundColor: 'transparent',
-    border: `1px solid ${theme.palette.green.dark}`,
+    border: `1px solid white`,
     width: 'auto',
     maxWidth: '25em',
     minWidth: '15em',
     borderRadius: '10px',
-    height: 'auto',
-    position: 'relative',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    overflow: 'auto',
   },
   signin__title: {
     marginTop: '2em',
@@ -115,7 +116,6 @@ function Alert(props) {
 }
 
 const Signin = props => {
-  const theme = useTheme();
   const classes = useStyles();
   const [visibility, setVisibility] = useState(false);
   const [open, setOpen] = useState(false);
@@ -168,7 +168,7 @@ const Signin = props => {
       </Head>
       <div className={classes.background} />
 
-      <div style={{ height: 'calc(100vh - 100px)' }}>
+      <div className={classes.signin_wrapper}>
         <Snackbar
           className={classes.snackbar}
           open={open}
