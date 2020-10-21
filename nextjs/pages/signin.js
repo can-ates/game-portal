@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
   },
   signin: {
     backgroundColor: 'transparent',
-    border: `1px solid white`,
+    border: `3px solid white`,
     width: 'auto',
     maxWidth: '25em',
     minWidth: '15em',
