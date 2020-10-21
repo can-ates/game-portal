@@ -1,3 +1,0 @@
-User-agent: *
-Sitemap: https://something.com/sitemap_local.xml 
-Disallow:
