@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 import dynamic from 'next/dynamic';
-import Head from 'next/head';
+
 import Typography from '@material-ui/core/Typography';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 const Grid = dynamic(() => import('@material-ui/core/Grid'));
@@ -29,21 +29,7 @@ const Similar = ({ details, game }) => {
 
   return (
     <div className={classes.body}>
-      <Head>
-        <title key='title'>
-          Visually similar games to {game} | Game Portal
-        </title>
-        <meta
-          name='description'
-          key='description'
-          content={`Game Portal | You liked ${game} ?. You can continue your journey with visually similar games to ${game} `}
-        />
-        <meta
-        key='og:title'
-        property='og:title'
-        content={`Game Portal | You liked ${game} ?. You can continue your journey with visually similar games to ${game} `}
-        />
-      </Head>
+      
 
       <Grid container direction='column'>
         <Grid item>
