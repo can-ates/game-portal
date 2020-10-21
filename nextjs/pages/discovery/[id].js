@@ -1,4 +1,4 @@
-import React from 'react';
+
 import axios from 'axios';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
