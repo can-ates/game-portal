@@ -6,7 +6,6 @@
     "@material-ui/core": "latest",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
-    "@svgr/webpack": "^5.4.0",
     "axios": "^0.19.2",
     "clsx": "latest",
     "dayjs": "^1.8.34",
@@ -33,6 +32,5 @@
     "dev": "next",
     "build": "next build",
     "start": "next start"
-    
   }
 }
