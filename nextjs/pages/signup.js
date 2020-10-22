@@ -49,7 +49,7 @@ const useStyles = makeStyles(theme => ({
   },
   signup: {
     backgroundColor: 'transparent',
-    border: `3px solid white`,
+    border: '4px solid white',
     width: 'auto',
     maxWidth: '25em',
     minWidth: '15em',

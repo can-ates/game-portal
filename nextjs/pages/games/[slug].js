@@ -96,12 +96,11 @@ const useStyles = makeStyles(theme => ({
   },
   centerColumn__genreTitle: {
     marginTop: '1em',
-  
   },
   centerColumn__about: {
     marginLeft: '1em',
     color: theme.palette.green.light,
-    wordBreak: 'break-word'
+    wordBreak: 'break-word',
   },
   centerColumn__icon: {
     marginLeft: '1em',
@@ -146,7 +145,7 @@ const useStyles = makeStyles(theme => ({
     opacity: '0.7',
     marginRight: '1em',
     display: 'inline-block',
-    color: 'white'
+    color: 'white',
   },
   slider: {
     padding: '1em',
@@ -374,12 +373,7 @@ function Game({ game, images, videos, scrollPosition }) {
             <Grid item sm={3} xs={12} className={classes.leftColumn}>
               <Grid container direction='column'>
                 <Grid item>
-                  <Skeleton
-                    animation='pulse'
-                    variant='rect'
-                    height='20em'
-                   
-                  />
+                  <Skeleton animation='pulse' variant='rect' height='20em' />
                 </Grid>
               </Grid>
             </Grid>
@@ -506,21 +500,21 @@ function Game({ game, images, videos, scrollPosition }) {
                       variant='rect'
                       width='100%'
                       height='10em'
-                      style={{marginTop: '1em'}}
+                      style={{ marginTop: '1em' }}
                     />
                   </div>
                 </Grid>
                 {/* TAGS */}
                 <Grid item align='center'>
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <Skeleton
-                    key={i}
-                    animation='pulse'
-                    variant='rect'
-                    width='100%'
-                    height='3em'
-                  />
-                ))}
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton
+                      key={i}
+                      animation='pulse'
+                      variant='rect'
+                      width='100%'
+                      height='3em'
+                    />
+                  ))}
                 </Grid>
               </Grid>
             </Grid>
@@ -580,7 +574,7 @@ function Game({ game, images, videos, scrollPosition }) {
           <Grid item container direction='row' spacing={4}>
             {/* LEFT COLUMN */}
             <Grid item md={3} className={classes.leftColumn}>
-              <Grid container direction='column'>
+              <Grid container direction='column' >
                 <Grid item>
                   <LazyLoadImage
                     src={game.background_image}
@@ -641,6 +635,22 @@ function Game({ game, images, videos, scrollPosition }) {
                       />
                     </Typography>
                   )}
+                </Grid>
+                <Grid item  >
+                  <Typography
+                    align='center'
+                    style={{
+                      color: 'white',
+                      marginTop: '2rem'
+                    }}
+                    variant='h6'
+                  >
+                    Thanks to{' '}
+                    <a href='https://rawg.io/apidocs' target='__blank'>
+                      Rawg.io
+                    </a>{' '}
+                    for the data
+                  </Typography>
                 </Grid>
               </Grid>
             </Grid>
@@ -831,7 +841,7 @@ function Game({ game, images, videos, scrollPosition }) {
           </Slider>
         </Grid>
       </Grid>
-      <Grid item container direction='column' style={{marginBottom: '2em'}}>
+      <Grid item container direction='column' style={{ marginBottom: '2em' }}>
         <Grid item ref={fetchComments}>
           <CommentForm handleComment={handleComment} />
         </Grid>
@@ -855,7 +865,6 @@ function Game({ game, images, videos, scrollPosition }) {
         </Grid>
       </Grid>
     </React.Fragment>
-    
   );
 }
 

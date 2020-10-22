@@ -117,7 +117,7 @@ function Index(props) {
 
   return (
     <div style={{ margin: '2em 0', padding: '0 10 0 10' }}>
-    {/* TODO og:url */}
+      {/* TODO og:url */}
       <Head>
         <title key='title'>
           The Largest Video Game Discovery Service | Game Portal
@@ -147,6 +147,17 @@ function Index(props) {
               variant='h1'
             >
               {title}
+            </Typography>
+          </Grid>
+          <Grid item >
+            <Typography
+              style={{
+                color: 'white',
+                marginRight: !matchesSM && '1.5rem'
+              }}
+              variant='h6'
+            >
+              Thanks to <a href='https://rawg.io/apidocs' target='__blank'>Rawg.io</a> for the data
             </Typography>
           </Grid>
         </Grid>
