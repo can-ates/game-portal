@@ -199,8 +199,10 @@ const GameCard = ({ info, scrollPosition }) => {
               <LazyLoadImage
                 className={classes.card__image}
                 src={info.background_image}
-                effect='blur'
+                effect='opacity'
                 scrollPosition={scrollPosition}
+                delayMethod='debounce'
+                delayTime={500}
                 onMouseOver={() => setShowVideo(true)}
               />
 
@@ -269,4 +271,4 @@ const GameCard = ({ info, scrollPosition }) => {
   );
 };
 
-export default React.memo(trackWindowScroll(GameCard));
+export default trackWindowScroll(GameCard)
