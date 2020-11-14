@@ -1,10 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '../../src/Link';
-import {
-  LazyLoadImage,
-  trackWindowScroll,
-} from 'react-lazy-load-image-component';
+
+
+import LazyLoad from 'react-lazyload';
 
 import Card from '@material-ui/core/Card';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -31,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     position: 'relative',
     height: '25em',
     width: '100%',
-    
+
     transition: 'transform 0.3s cubic-bezier(0.230, 1.000, 0.320, 1.000)',
     [theme.breakpoints.up('sm')]: {
       '&:hover': {
@@ -136,9 +135,9 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const GameCard = ({ info, scrollPosition }) => {
+const GameCard = ({ info }) => {
   const [showVideo, setShowVideo] = useState(false);
-  
+
   const classes = useStyles();
 
   const renderIcons = useCallback(
@@ -146,20 +145,23 @@ const GameCard = ({ info, scrollPosition }) => {
       info.parent_platforms.map(platform => {
         switch (platform.platform.name) {
           case 'PlayStation':
-            return <FaPlaystation key='PlayStation' className={classes.card__icon} />;
+            return (
+              <FaPlaystation key='PlayStation' className={classes.card__icon} />
+            );
           case 'Xbox':
             return <FaXbox key='Xbox' className={classes.card__icon} />;
           case 'PC':
             return <FaWindows key='PC' className={classes.card__icon} />;
           case 'Apple Macintosh':
-            return <FaApple key='Apple Macintosh' className={classes.card__icon} />;
+            return (
+              <FaApple key='Apple Macintosh' className={classes.card__icon} />
+            );
           case 'Linux':
             return <FaLinux key='Linux' className={classes.card__icon} />;
         }
       }),
     [info.parent_platforms]
   );
-
 
   return (
     <React.Fragment>
@@ -168,8 +170,6 @@ const GameCard = ({ info, scrollPosition }) => {
           className={classes.card}
           elevation={0}
           onMouseLeave={() => setShowVideo(false)}
-          
-         
         >
           {showVideo && info.clip ? (
             <React.Fragment>
@@ -196,15 +196,14 @@ const GameCard = ({ info, scrollPosition }) => {
             </React.Fragment>
           ) : (
             <React.Fragment>
-              <LazyLoadImage
-                className={classes.card__image}
-                src={info.background_image}
-                effect='opacity'
-                scrollPosition={scrollPosition}
-                delayMethod='debounce'
-                delayTime={500}
-                onMouseOver={() => setShowVideo(true)}
-              />
+              
+              <LazyLoad height='100%' unmountIfInvisible={true} >
+                <img
+                  src={info.background_image}
+                  className={classes.card__image}
+                  onMouseOver={() => setShowVideo(true)}
+                />
+              </LazyLoad>
 
               {info.clip && <FaPlay className={classes.card__playButton} />}
 
@@ -271,4 +270,4 @@ const GameCard = ({ info, scrollPosition }) => {
   );
 };
 
-export default trackWindowScroll(GameCard)
+export default GameCard
