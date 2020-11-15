@@ -831,7 +831,6 @@ function Game({ game, images, videos, scrollPosition }) {
                 <img
                   src={image.image}
                   className={classes.slider__gameImage}
-                  onMouseOver={() => setShowVideo(true)}
                   alt={`image of ${game.name}`}
                 />
               </LazyLoad>
