@@ -12,7 +12,6 @@ import { useStore, initializeStore } from '../store';
 import { instance } from '../src/utils/axios';
 import { logoutUser, getAuthenticatedUser } from '../actions/userActions';
 import * as types from '../actions/types';
-import 'react-lazy-load-image-component/src/effects/blur.css';
 import 'react-circular-progressbar/dist/styles.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';

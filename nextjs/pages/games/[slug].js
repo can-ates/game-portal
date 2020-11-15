@@ -11,10 +11,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Link from '../../src/Link';
 import Head from 'next/head';
 import Slider from 'react-slick';
-import {
-  LazyLoadImage,
-  trackWindowScroll,
-} from 'react-lazy-load-image-component';
+import LazyLoad from 'react-lazyload';
 
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
@@ -574,13 +571,14 @@ function Game({ game, images, videos, scrollPosition }) {
           <Grid item container direction='row' spacing={4}>
             {/* LEFT COLUMN */}
             <Grid item md={3} className={classes.leftColumn}>
-              <Grid container direction='column' >
+              <Grid container direction='column'>
                 <Grid item>
-                  <LazyLoadImage
-                    src={game.background_image}
-                    effect='blur'
-                    className={classes.leftColumn__cardImage}
-                  />
+                  <LazyLoad height='100%' unmountIfInvisible={true}>
+                    <img
+                      src={game.background_image}
+                      className={classes.leftColumn__cardImage}
+                    />
+                  </LazyLoad>
                 </Grid>
                 {/* WEBSITE-REDDIT-METACRITIC */}
 
@@ -636,12 +634,12 @@ function Game({ game, images, videos, scrollPosition }) {
                     </Typography>
                   )}
                 </Grid>
-                <Grid item  >
+                <Grid item>
                   <Typography
                     align='center'
                     style={{
                       color: 'white',
-                      marginTop: '2rem'
+                      marginTop: '2rem',
                     }}
                     variant='h6'
                   >
@@ -829,14 +827,14 @@ function Game({ game, images, videos, scrollPosition }) {
             ))}
 
             {images.map(image => (
-              <LazyLoadImage
-                effect='blur'
-                scrollPosition={scrollPosition}
-                key={image.id}
-                className={classes.slider__gameImage}
-                src={image.image}
-                alt={`image of ${game.name}`}
-              />
+              <LazyLoad height='100%' unmountIfInvisible={true} key={image.id}>
+                <img
+                  src={image.image}
+                  className={classes.slider__gameImage}
+                  onMouseOver={() => setShowVideo(true)}
+                  alt={`image of ${game.name}`}
+                />
+              </LazyLoad>
             ))}
           </Slider>
         </Grid>
@@ -906,4 +904,4 @@ export async function getStaticProps({ params }) {
   return { props: { game, images, videos } };
 }
 
-export default trackWindowScroll(Game);
+export default Game;

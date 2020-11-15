@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
+import LazyLoad from 'react-lazyload';
 
 import ListSubheader from '@material-ui/core/ListSubheader';
 import List from '@material-ui/core/List';
@@ -103,7 +103,7 @@ const SortBar = props => {
             variant='rect'
             width={matchesSM ? 100 : 150}
             height={matchesSM ? 40 : 55}
-            style={{ borderRadius: '5px',marginBottom: '0.5em' }}
+            style={{ borderRadius: '5px', marginBottom: '0.5em' }}
           />
         ))}
       </div>
@@ -176,11 +176,9 @@ const SortBar = props => {
         return <SiItchDotIo key={info.name} />;
       default:
         return (
-          <LazyLoadImage
-            className={classes.list__avatar}
-            src={info.image_background}
-            effect='blur'
-          />
+          <LazyLoad height='100%' unmountIfInvisible={true}>
+            <img className={classes.list__avatar} src={info.image_background} />
+          </LazyLoad>
         );
     }
   };

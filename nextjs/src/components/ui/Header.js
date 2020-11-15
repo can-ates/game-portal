@@ -1,7 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 import axios from 'axios';
-import { LazyLoadImage } from 'react-lazy-load-image-component';
+import LazyLoad from 'react-lazyload';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { fade, makeStyles, useTheme } from '@material-ui/core/styles';
@@ -144,17 +144,17 @@ const useStyles = makeStyles(theme => ({
     borderRadius: '10px',
     padding: theme.spacing(2),
     backgroundColor: theme.palette.green.light,
-    '&::before' :{
+    '&::before': {
       content: "''",
       position: 'absolute',
-      top : '-2px',
+      top: '-2px',
       left: '50%',
       height: '20px',
       width: '20px',
       transform: 'rotate(45deg)',
       zIndex: '35000',
-      backgroundColor: theme.palette.green.light
-    }
+      backgroundColor: theme.palette.green.light,
+    },
   },
   detail: {
     display: 'flex',
@@ -167,22 +167,22 @@ const useStyles = makeStyles(theme => ({
   snackbar: {
     marginTop: '100px',
   },
-  popper:{
+  popper: {
     zIndex: '10',
-    marginTop : '1em',
+    marginTop: '1em',
     position: 'relative',
-    '&::before' :{
+    '&::before': {
       content: "''",
       position: 'absolute',
-      top : '-2px',
+      top: '-2px',
       left: '40%',
       height: '20px',
       width: '20px',
       transform: 'rotate(45deg)',
       zIndex: '35000',
-      backgroundColor: theme.palette.green.light
-    }
-  }
+      backgroundColor: theme.palette.green.light,
+    },
+  },
 }));
 
 function Alert(props) {
@@ -382,18 +382,17 @@ function Header() {
         <Toolbar disableGutters>
           <Button variant='text' disableRipple component={Link} href='/'>
             <Typography className={classes.title} variant='h5'>
-            {matchesXS ? 'G' : 'Game'}
+              {matchesXS ? 'G' : 'Game'}
             </Typography>
             <Typography
               className={classes.title}
               style={{
                 color: theme.palette.green.light,
-                marginLeft: matchesXS ? '0':'0.2em',
+                marginLeft: matchesXS ? '0' : '0.2em',
               }}
               variant='h5'
-              
             >
-            {matchesXS ? 'P' : 'Portal'}
+              {matchesXS ? 'P' : 'Portal'}
             </Typography>
           </Button>
 
@@ -424,13 +423,13 @@ function Header() {
                         className={classes.listItem}
                       >
                         <ListItemAvatar>
-                          <LazyLoadImage
-                            alt={`Avatar of ${result.name}`}
-                            src={result.background_image}
-                            className={classes.resultImage}
-                            effect='opacity'
-                            placeholderSrc={result.background_image}
-                          />
+                          <LazyLoad height='100%' unmountIfInvisible={true}>
+                            <img
+                              src={result.background_image}
+                              alt={`Avatar of ${result.name}`}
+                              className={classes.resultImage}
+                            />
+                          </LazyLoad>
                         </ListItemAvatar>
                         <ListItemText
                           disableTypography
@@ -447,18 +446,20 @@ function Header() {
               </div>
             )}
           </div>
-          {matchesXS && <IconButton
-            edge='start'
-            className={classes.menuButton}
-            aria-label='open drawer'
-            ref={anchorRef}
-            aria-controls={open ? 'menu-list-grow' : undefined}
-            aria-haspopup='true'
-            onClick={handlePopperToggle}
-          >
-            <MenuIcon />
-          </IconButton>}
-          
+          {matchesXS && (
+            <IconButton
+              edge='start'
+              className={classes.menuButton}
+              aria-label='open drawer'
+              ref={anchorRef}
+              aria-controls={open ? 'menu-list-grow' : undefined}
+              aria-haspopup='true'
+              onClick={handlePopperToggle}
+            >
+              <MenuIcon />
+            </IconButton>
+          )}
+
           <div className={classes.grow} />
           <div className={classes.sign}>
             <div className={classes.sign}>
