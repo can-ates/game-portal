@@ -87,9 +87,7 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     borderBottomLeftRadius: '10px',
     borderBottomRightRadius: '10px',
-    '&:hover': {
-      cursor: 'pointer',
-    },
+    
   },
   card__fullButton: {
     position: 'absolute',
@@ -128,6 +126,7 @@ const useStyles = makeStyles(theme => ({
   card__gameName: {
     color: theme.palette.green.light,
     display: 'block',
+    fontSize: '1.2rem',
     '&:hover': {
       color: 'white',
       transform: 'scale(1.01)',
