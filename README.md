@@ -40,7 +40,7 @@ So that ISR allows us to update existing pages by-rerendering them in the backgr
 - [Formik](https://formik.org/)
 - [react-slick](https://react-slick.neostack.com/)
 - [yup](https://github.com/jquense/yup)
-- [lazy-load-image](https://github.com/Aljullu/react-lazy-load-image-component)
+- [react-lazyload](https://github.com/twobin/react-lazyload)
 
 ## Credits & API usage
-Game Portal uses [RAWG.IO](https://rawg.io/apidocs) API to provide game datas
+Game Portal uses [RAWG.IO](https://rawg.io/apidocs) API to provide game data
