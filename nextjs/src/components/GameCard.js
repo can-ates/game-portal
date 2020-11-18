@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     height: '100%',
   },
   card: {
-    backgroundColor: '#121212',
+    backgroundColor: '#427675',
     position: 'relative',
     height: '25em',
     width: '100%',
@@ -169,7 +169,7 @@ const GameCard = ({ info }) => {
           onMouseLeave={() => setShowVideo(false)}
         >
           {showVideo && info.clip ? (
-            <LazyLoad height='100%' unmountIfInvisible={true}>
+            <LazyLoad height='100%'>
               <CardMedia
                 muted={true}
                 autoPlay={true}
@@ -192,7 +192,7 @@ const GameCard = ({ info }) => {
               </Button>
             </LazyLoad>
           ) : (
-            <LazyLoad height='100%' offset={500} unmountIfInvisible={true}>
+            <LazyLoad height='100%' offset={77} debounce={200} unmountIfInvisible={true}>
               <img
                 src={info.background_image}
                 className={classes.card__image}
