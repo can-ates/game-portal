@@ -29,7 +29,7 @@ export default class MyDocument extends Document {
             margin: '0',
             padding: '0',
             boxSizing: 'border-box',
-            
+            transform: 'translate3d(0,0,0)' 
           }}
         >
           <Main />

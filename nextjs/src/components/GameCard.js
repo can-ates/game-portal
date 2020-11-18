@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '../../src/Link';
 
-
 import LazyLoad from 'react-lazyload';
 
 import Card from '@material-ui/core/Card';
@@ -87,7 +86,6 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
     borderBottomLeftRadius: '10px',
     borderBottomRightRadius: '10px',
-    
   },
   card__fullButton: {
     position: 'absolute',
@@ -171,7 +169,7 @@ const GameCard = ({ info }) => {
           onMouseLeave={() => setShowVideo(false)}
         >
           {showVideo && info.clip ? (
-            <React.Fragment>
+            <LazyLoad height='100%' unmountIfInvisible={true}>
               <CardMedia
                 muted={true}
                 autoPlay={true}
@@ -192,17 +190,14 @@ const GameCard = ({ info }) => {
                 <FaPlay className={classes.card__playIcon} fontSize='0.6rem' />
                 <Typography variant='overline'>Full Video</Typography>
               </Button>
-            </React.Fragment>
+            </LazyLoad>
           ) : (
-            <React.Fragment>
-              
-              <LazyLoad height='100%' unmountIfInvisible={true} >
-                <img
-                  src={info.background_image}
-                  className={classes.card__image}
-                  onMouseOver={() => setShowVideo(true)}
-                />
-              </LazyLoad>
+            <LazyLoad height='100%' offset={500} unmountIfInvisible={true}>
+              <img
+                src={info.background_image}
+                className={classes.card__image}
+                onMouseOver={() => setShowVideo(true)}
+              />
 
               {info.clip && <FaPlay className={classes.card__playButton} />}
 
@@ -212,7 +207,7 @@ const GameCard = ({ info }) => {
                   <Typography variant='h6'>{info.name}</Typography>
                 </CardContent>
               )}
-            </React.Fragment>
+            </LazyLoad>
           )}
           {showVideo && (
             <CardContent className={classes.card__videoDetail}>
@@ -269,4 +264,4 @@ const GameCard = ({ info }) => {
   );
 };
 
-export default GameCard
+export default GameCard;
